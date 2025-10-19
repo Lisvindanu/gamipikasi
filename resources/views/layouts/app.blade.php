@@ -21,38 +21,156 @@
     @stack('styles')
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div style="display: flex; align-items: center; gap: 2rem;">
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <div class="navbar-logo" style="background: linear-gradient(135deg, var(--google-blue), var(--google-green)); color: white; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem;">
-                    🎯
-                </div>
-                <h1 class="navbar-title">GDGoC Gamification</h1>
-            </div>
+    <style>
+        /* Authenticated Navbar - Same structure as public navbar */
+        .navbar-auth {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: white;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+        }
 
-            <!-- Main Navigation (Desktop) -->
-            <nav class="navbar-links-desktop" style="display: flex; gap: 1.5rem;">
-                <a href="{{ route('home') }}" style="color: var(--text-primary); text-decoration: none; font-weight: 600; font-size: 0.875rem; transition: color 0.3s;" onmouseover="this.style.color='var(--google-blue)'" onmouseout="this.style.color='var(--text-primary)'">
-                    Beranda
-                </a>
-                <a href="{{ route('public.leaderboard') }}" style="color: var(--text-primary); text-decoration: none; font-weight: 600; font-size: 0.875rem; transition: color 0.3s;" onmouseover="this.style.color='var(--google-blue)'" onmouseout="this.style.color='var(--text-primary)'">
-                    Papan Peringkat
-                </a>
-                <a href="{{ route('posts.index') }}" style="color: var(--text-primary); text-decoration: none; font-weight: 600; font-size: 0.875rem; transition: color 0.3s;" onmouseover="this.style.color='var(--google-blue)'" onmouseout="this.style.color='var(--text-primary)'">
-                    Postingan
-                </a>
-                <a href="{{ route('public.badges') }}" style="color: var(--text-primary); text-decoration: none; font-weight: 600; font-size: 0.875rem; transition: color 0.3s;" onmouseover="this.style.color='var(--google-blue)'" onmouseout="this.style.color='var(--text-primary)'">
-                    Lencana
-                </a>
-            </nav>
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .navbar-menu-desktop {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .navbar-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: color 0.3s;
+        }
+
+        .navbar-link:hover {
+            color: var(--google-blue);
+        }
+
+        .navbar-user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .navbar-dashboard-links {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .navbar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .mobile-menu-auth {
+            display: none;
+            position: fixed;
+            top: 73px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 73px);
+            background: white;
+            z-index: 999;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .mobile-menu-auth.active {
+            display: block;
+        }
+
+        .mobile-menu-link {
+            padding: 1rem;
+            border-radius: 12px;
+            background: var(--bg-light);
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .mobile-menu-link:active {
+            background: rgba(66, 133, 244, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .navbar-auth {
+                padding: 1rem;
+            }
+
+            .navbar-menu-desktop,
+            .navbar-user-section {
+                display: none !important;
+            }
+
+            .navbar-toggle {
+                display: block !important;
+            }
+
+            .navbar-logo {
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 1.125rem !important;
+            }
+
+            .navbar-title {
+                font-size: 1rem !important;
+            }
+        }
+    </style>
+
+    <!-- Navbar -->
+    <nav class="navbar-auth">
+        <!-- Left Side: Logo + Brand -->
+        <div class="navbar-brand">
+            <div class="navbar-logo" style="background: linear-gradient(135deg, var(--google-blue), var(--google-green)); color: white; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem;">
+                🎯
+            </div>
+            <h1 class="navbar-title" style="font-size: 1.125rem; font-weight: 700; color: var(--text-primary); margin: 0;">GDGoC Gamification</h1>
         </div>
 
         <!-- Desktop Menu -->
-        <div class="navbar-menu navbar-menu-desktop">
+        <div class="navbar-menu-desktop">
+            <!-- Main Navigation Links -->
+            <div class="navbar-links">
+                <a href="{{ route('home') }}" class="navbar-link">Beranda</a>
+                <a href="{{ route('public.leaderboard') }}" class="navbar-link">Papan Peringkat</a>
+                <a href="{{ route('posts.index') }}" class="navbar-link">Postingan</a>
+                <a href="{{ route('public.badges') }}" class="navbar-link">Lencana</a>
+            </div>
+        </div>
+
+        <!-- Desktop User Section -->
+        <div class="navbar-user-section">
             @auth
                 <!-- Dashboard Links -->
-                <div class="navbar-dashboard-buttons" style="display: flex; gap: 0.5rem; margin-right: 1rem;">
+                <div class="navbar-dashboard-links">
                     {{-- HR Dashboard --}}
                     @if(auth()->user()->department_id == 1)
                         <a href="{{ route('hr.dashboard') }}" class="btn {{ Request::routeIs('hr.dashboard') ? 'btn-primary' : 'btn-secondary' }}" style="padding: 0.5rem 1rem;">
@@ -322,16 +440,16 @@
     <script>
         lucide.createIcons();
 
-        // Mobile Menu Toggle
+        // Mobile Menu Toggle (same as public navbar)
         window.toggleMobileMenu = function() {
             const menu = document.getElementById('mobileMenuAuth');
             const toggle = document.querySelector('.navbar-toggle i');
 
-            if (menu.style.display === 'none' || menu.style.display === '') {
-                menu.style.display = 'block';
+            menu.classList.toggle('active');
+
+            if (menu.classList.contains('active')) {
                 toggle.setAttribute('data-lucide', 'x');
             } else {
-                menu.style.display = 'none';
                 toggle.setAttribute('data-lucide', 'menu');
             }
             lucide.createIcons();
@@ -343,7 +461,7 @@
                 const menu = document.getElementById('mobileMenuAuth');
                 const toggle = document.querySelector('.navbar-toggle i');
                 if (menu) {
-                    menu.style.display = 'none';
+                    menu.classList.remove('active');
                     if (toggle) {
                         toggle.setAttribute('data-lucide', 'menu');
                         lucide.createIcons();

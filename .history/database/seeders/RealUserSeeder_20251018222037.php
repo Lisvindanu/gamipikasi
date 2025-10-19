@@ -142,7 +142,7 @@ class RealUserSeeder extends Seeder
             // 12. Head of Web Dev
             [
                 'name' => 'Rafli Ramdhani',
-                'email' => 'rafli@kodingin.id',
+                'email' => 'rafli.webdev@gdgoc.id',
                 'password' => $defaultPassword,
                 'role' => 'head',
                 'department_id' => $departments['web']->id ?? null,

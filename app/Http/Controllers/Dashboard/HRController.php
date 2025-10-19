@@ -46,7 +46,7 @@ class HRController extends Controller
 
         // Get all members with their departments
         $members = User::with('department')
-            ->whereIn('role', ['member', 'head'])
+            ->whereIn('role', ['member', 'head', 'secretary', 'bendahara'])
             ->orderBy('total_points', 'desc')
             ->get();
 

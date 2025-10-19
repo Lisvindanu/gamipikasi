@@ -840,6 +840,45 @@
         }
     });
 
+    // Filter & Search functionality
+    const departmentFilter = document.getElementById('department-filter');
+    const searchInput = document.getElementById('search-member');
+    const tableBody = document.getElementById('member-table-body');
+
+    function filterMembers() {
+        const selectedDept = departmentFilter.value;
+        const searchTerm = searchInput.value.toLowerCase();
+
+        // Get fresh rows setiap kali filter
+        const allRows = Array.from(tableBody.querySelectorAll('tr'));
+
+        allRows.forEach(row => {
+            const deptCell = row.cells[3].textContent; // Department column
+            const nameCell = row.cells[1].textContent.toLowerCase(); // Name column
+
+            // Jika tidak ada filter department dipilih, atau department cocok
+            let matchesDept = true;
+            if (selectedDept) {
+                // Cari department yang dipilih dari option
+                const selectedOption = departmentFilter.options[departmentFilter.selectedIndex];
+                const selectedDeptName = selectedOption.textContent;
+                matchesDept = deptCell === selectedDeptName;
+            }
+
+            const matchesSearch = !searchTerm || nameCell.includes(searchTerm);
+
+            if (matchesDept && matchesSearch) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    // Event listeners for filtering
+    departmentFilter.addEventListener('change', filterMembers);
+    searchInput.addEventListener('input', filterMembers);
+
     // Initialize icons
     lucide.createIcons();
 </script>

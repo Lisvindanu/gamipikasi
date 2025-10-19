@@ -501,6 +501,20 @@ body {
 }
 
 @media (max-width: 768px) {
+  /* ===== PREVENT HORIZONTAL OVERFLOW ===== */
+  body {
+    overflow-x: hidden;
+  }
+
+  * {
+    max-width: 100%;
+  }
+
+  img, video, iframe {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
   /* ===== AUTHENTICATED NAVBAR (layouts/app.blade.php) ===== */
   .navbar {
     padding: 1rem;
@@ -646,11 +660,30 @@ body {
   /* Responsive tables */
   .table-responsive {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
 
   /* Hide less important columns on mobile */
   .mobile-hidden {
     display: none !important;
+  }
+
+  /* Text wrapping */
+  .card, .btn, .input-modern {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Prevent long text overflow */
+  h1, h2, h3, h4, h5, h6, p {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   /* Department header */
@@ -698,7 +731,50 @@ body {
     grid-template-columns: 1fr !important;
     gap: 1rem !important;
   }
+
+  /* Dashboard specific */
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .stat-card {
+    min-width: 0;
+  }
+
+  /* Filters and search */
+  .filter-section, .search-section {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Modal adjustments */
+  .modal-content {
+    width: 95% !important;
+    max-width: 95% !important;
+    padding: 1.5rem !important;
+    margin: 1rem !important;
+  }
+
+  .modal-title {
+    font-size: 1.25rem !important;
+  }
+
+  /* Chart containers */
+  .chart-container {
+    overflow-x: auto;
+  }
+
+  /* Action buttons */
+  .action-buttons {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .action-buttons button {
+    width: 100% !important;
+  }
 }
+
 
 @media (max-width: 480px) {
   .navbar {

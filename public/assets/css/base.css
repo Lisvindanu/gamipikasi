@@ -525,7 +525,8 @@ body {
   .navbar-menu > *,
   .navbar-menu-desktop > *,
   .navbar > .navbar-menu,
-  .navbar > .navbar-menu-desktop {
+  .navbar > .navbar-menu-desktop,
+  .navbar-dashboard-buttons {
     display: none !important;
   }
 
@@ -533,8 +534,15 @@ body {
     display: none !important;
   }
 
-  /* Make sure only logo+title and hamburger visible */
-  .navbar > *:not(.navbar > div:first-child):not(.navbar-toggle) {
+  /* Hide all direct children of navbar except logo container and hamburger */
+  .navbar > *:not(:first-child):not(.navbar-toggle) {
+    display: none !important;
+  }
+
+  /* Force hide notification bell, user avatar, logout button */
+  .navbar .btn,
+  .navbar .navbar-user,
+  .navbar form {
     display: none !important;
   }
 

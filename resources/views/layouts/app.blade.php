@@ -52,7 +52,7 @@
         <div class="navbar-menu navbar-menu-desktop">
             @auth
                 <!-- Dashboard Links -->
-                <div style="display: flex; gap: 0.5rem; margin-right: 1rem;">
+                <div class="navbar-dashboard-buttons" style="display: flex; gap: 0.5rem; margin-right: 1rem;">
                     {{-- HR Dashboard --}}
                     @if(auth()->user()->department_id == 1)
                         <a href="{{ route('hr.dashboard') }}" class="btn {{ Request::routeIs('hr.dashboard') ? 'btn-primary' : 'btn-secondary' }}" style="padding: 0.5rem 1rem;">

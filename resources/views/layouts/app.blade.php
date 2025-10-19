@@ -302,7 +302,7 @@
 
     <!-- Mobile Menu -->
     @auth
-    <div id="mobileMenuAuth" class="mobile-menu-auth" style="display: none;">
+    <div id="mobileMenuAuth" class="mobile-menu-auth">
         <!-- User Card -->
         <div style="background: linear-gradient(135deg, var(--google-blue), var(--google-green)); color: white; padding: 1.5rem; border-radius: 16px; margin-bottom: 1.5rem; text-align: center;">
             <div style="width: 64px; height: 64px; border-radius: 50%; background: white; color: var(--google-blue); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.5rem; margin: 0 auto 1rem; overflow: hidden;">

@@ -177,7 +177,7 @@
         </div>
 
         <!-- Mobile Hamburger Button -->
-        <button class="navbar-toggle" onclick="toggleMobileMenu()" style="display: none;">
+        <button class="navbar-toggle" onclick="toggleMobileMenu()">
             <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
         </button>
     </nav>

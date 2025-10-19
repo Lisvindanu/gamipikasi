@@ -505,15 +505,23 @@ body {
     padding: 1rem;
     gap: 0.75rem;
     justify-content: space-between;
+    flex-wrap: nowrap !important;
   }
 
   .navbar-title {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
-  /* Hide desktop menu on mobile */
+  .navbar-logo {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 1rem !important;
+  }
+
+  /* Hide ALL desktop menu elements on mobile */
   .navbar-menu,
-  .navbar-menu-desktop {
+  .navbar-menu-desktop,
+  .navbar > div:last-child {
     display: none !important;
   }
 
@@ -529,10 +537,15 @@ body {
   /* Logo and title only */
   .navbar > div:first-child {
     flex-shrink: 0;
+    gap: 1rem !important;
   }
 
   .navbar > div:first-child > div:first-child {
-    gap: 0.75rem;
+    gap: 0.5rem !important;
+  }
+
+  .navbar > div:first-child > nav {
+    display: none !important;
   }
 
   .form-row {

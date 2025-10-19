@@ -419,6 +419,46 @@ body {
   font-size: 0.875rem;
 }
 
+/* Mobile Menu Styles */
+.mobile-menu-auth {
+  position: fixed;
+  top: 73px;
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 73px);
+  background: white;
+  z-index: 999;
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: none;
+}
+
+.mobile-menu-link {
+  padding: 1rem;
+  border-radius: 12px;
+  background: var(--bg-light);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mobile-menu-link:active {
+  background: rgba(66, 133, 244, 0.1);
+}
+
+.navbar-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: var(--text-primary);
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
   /* Hide button text on tablets, keep icons */
@@ -470,19 +510,18 @@ body {
     font-size: 1rem;
   }
 
-  .navbar-menu {
-    gap: 0.5rem;
-    width: 100%;
-    justify-content: flex-start;
+  /* Hide desktop menu on mobile */
+  .navbar-menu-desktop {
+    display: none !important;
   }
 
-  .navbar > div:first-child {
-    flex-wrap: wrap;
-    gap: 1rem;
+  .navbar-links-desktop {
+    display: none !important;
   }
 
-  .navbar > div:first-child > nav {
-    display: none !important; /* Hide main nav links on mobile */
+  /* Show hamburger button on mobile */
+  .navbar-toggle {
+    display: block !important;
   }
 
   .form-row {

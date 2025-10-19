@@ -31,8 +31,8 @@
                 <h1 class="navbar-title">GDGoC Gamification</h1>
             </div>
 
-            <!-- Main Navigation -->
-            <nav style="display: flex; gap: 1.5rem;">
+            <!-- Main Navigation (Desktop) -->
+            <nav class="navbar-links-desktop" style="display: flex; gap: 1.5rem;">
                 <a href="{{ route('home') }}" style="color: var(--text-primary); text-decoration: none; font-weight: 600; font-size: 0.875rem; transition: color 0.3s;" onmouseover="this.style.color='var(--google-blue)'" onmouseout="this.style.color='var(--text-primary)'">
                     Beranda
                 </a>
@@ -48,7 +48,8 @@
             </nav>
         </div>
 
-        <div class="navbar-menu">
+        <!-- Desktop Menu -->
+        <div class="navbar-menu navbar-menu-desktop">
             @auth
                 <!-- Dashboard Links -->
                 <div style="display: flex; gap: 0.5rem; margin-right: 1rem;">
@@ -174,7 +175,130 @@
                 </form>
             @endauth
         </div>
+
+        <!-- Mobile Hamburger Button -->
+        <button class="navbar-toggle" onclick="toggleMobileMenu()" style="display: none;">
+            <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
+        </button>
     </nav>
+
+    <!-- Mobile Menu -->
+    @auth
+    <div id="mobileMenuAuth" class="mobile-menu-auth" style="display: none;">
+        <!-- User Card -->
+        <div style="background: linear-gradient(135deg, var(--google-blue), var(--google-green)); color: white; padding: 1.5rem; border-radius: 16px; margin-bottom: 1.5rem; text-align: center;">
+            <div style="width: 64px; height: 64px; border-radius: 50%; background: white; color: var(--google-blue); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.5rem; margin: 0 auto 1rem; overflow: hidden;">
+                @if(auth()->user()->avatar_path)
+                    <img src="{{ asset('storage/' . auth()->user()->avatar_path) }}" alt="{{ auth()->user()->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                @else
+                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                @endif
+            </div>
+            <div style="font-weight: 700; font-size: 1.125rem; margin-bottom: 0.25rem;">{{ auth()->user()->name }}</div>
+            <div style="opacity: 0.9; font-size: 0.875rem; text-transform: capitalize;">
+                {{ str_replace('-', ' ', auth()->user()->role) }}
+            </div>
+        </div>
+
+        <!-- Dashboard Links -->
+        <div style="margin-bottom: 1.5rem;">
+            <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 0.75rem;">Dashboard</div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                @if(auth()->user()->department_id == 1)
+                    <a href="{{ route('hr.dashboard') }}" class="mobile-menu-link">
+                        <i data-lucide="clipboard-check" style="width: 20px; height: 20px;"></i>
+                        <span>HR Dashboard</span>
+                    </a>
+                @endif
+
+                @if(auth()->user()->role === 'head')
+                    <a href="{{ route('head.dashboard') }}" class="mobile-menu-link">
+                        <i data-lucide="users" style="width: 20px; height: 20px;"></i>
+                        <span>Tim Saya</span>
+                    </a>
+                    <a href="{{ route('head.tasks.board') }}" class="mobile-menu-link">
+                        <i data-lucide="kanban-square" style="width: 20px; height: 20px;"></i>
+                        <span>Papan Tugas</span>
+                    </a>
+                @endif
+
+                @if(in_array(auth()->user()->role, ['lead', 'co-lead']))
+                    <a href="{{ route('lead.dashboard') }}" class="mobile-menu-link">
+                        <i data-lucide="layout-dashboard" style="width: 20px; height: 20px;"></i>
+                        <span>Kepemimpinan</span>
+                    </a>
+                    <a href="{{ route('lead.tasks.board') }}" class="mobile-menu-link">
+                        <i data-lucide="kanban-square" style="width: 20px; height: 20px;"></i>
+                        <span>Papan Tugas</span>
+                    </a>
+                    <a href="{{ route('lead.activity-log') }}" class="mobile-menu-link">
+                        <i data-lucide="activity" style="width: 20px; height: 20px;"></i>
+                        <span>Log Aktivitas</span>
+                    </a>
+                    <a href="{{ route('lead.settings') }}" class="mobile-menu-link">
+                        <i data-lucide="settings" style="width: 20px; height: 20px;"></i>
+                        <span>Pengaturan</span>
+                    </a>
+                @endif
+
+                @if(in_array(auth()->user()->role, ['lead', 'co-lead']) || (auth()->user()->role === 'head' && auth()->user()->email === 'Lisvindanu015@gmail.com'))
+                    <a href="{{ route('lead.users.index') }}" class="mobile-menu-link">
+                        <i data-lucide="users-cog" style="width: 20px; height: 20px;"></i>
+                        <span>Kelola Pengguna</span>
+                    </a>
+                @endif
+
+                @if(in_array(auth()->user()->role, ['secretary', 'bendahara', 'member']))
+                    <a href="{{ route('member.dashboard') }}" class="mobile-menu-link">
+                        <i data-lucide="layout-dashboard" style="width: 20px; height: 20px;"></i>
+                        <span>Dashboard Saya</span>
+                    </a>
+                    <a href="{{ route('member.tasks.board') }}" class="mobile-menu-link">
+                        <i data-lucide="kanban-square" style="width: 20px; height: 20px;"></i>
+                        <span>Papan Tugas</span>
+                    </a>
+                @endif
+
+                <a href="{{ route('profile.show', auth()->user()) }}" class="mobile-menu-link">
+                    <i data-lucide="user-circle" style="width: 20px; height: 20px;"></i>
+                    <span>Profil Saya</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <div style="margin-bottom: 1.5rem;">
+            <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 0.75rem;">Navigasi</div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <a href="{{ route('home') }}" class="mobile-menu-link">
+                    <i data-lucide="home" style="width: 20px; height: 20px;"></i>
+                    <span>Beranda</span>
+                </a>
+                <a href="{{ route('public.leaderboard') }}" class="mobile-menu-link">
+                    <i data-lucide="trophy" style="width: 20px; height: 20px;"></i>
+                    <span>Papan Peringkat</span>
+                </a>
+                <a href="{{ route('posts.index') }}" class="mobile-menu-link">
+                    <i data-lucide="newspaper" style="width: 20px; height: 20px;"></i>
+                    <span>Postingan</span>
+                </a>
+                <a href="{{ route('public.badges') }}" class="mobile-menu-link">
+                    <i data-lucide="award" style="width: 20px; height: 20px;"></i>
+                    <span>Lencana</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Logout -->
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="mobile-menu-link" style="width: 100%; border: none; cursor: pointer; background: rgba(234, 67, 53, 0.1); color: var(--google-red);">
+                <i data-lucide="log-out" style="width: 20px; height: 20px;"></i>
+                <span>Keluar</span>
+            </button>
+        </form>
+    </div>
+    @endauth
 
     <!-- Main Content -->
     <main class="container">
@@ -197,6 +321,36 @@
 
     <script>
         lucide.createIcons();
+
+        // Mobile Menu Toggle
+        window.toggleMobileMenu = function() {
+            const menu = document.getElementById('mobileMenuAuth');
+            const toggle = document.querySelector('.navbar-toggle i');
+
+            if (menu.style.display === 'none' || menu.style.display === '') {
+                menu.style.display = 'block';
+                toggle.setAttribute('data-lucide', 'x');
+            } else {
+                menu.style.display = 'none';
+                toggle.setAttribute('data-lucide', 'menu');
+            }
+            lucide.createIcons();
+        };
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.mobile-menu-link').forEach(link => {
+            link.addEventListener('click', function() {
+                const menu = document.getElementById('mobileMenuAuth');
+                const toggle = document.querySelector('.navbar-toggle i');
+                if (menu) {
+                    menu.style.display = 'none';
+                    if (toggle) {
+                        toggle.setAttribute('data-lucide', 'menu');
+                        lucide.createIcons();
+                    }
+                }
+            });
+        });
 
         // Helper function to show loading
         window.showLoading = function() {

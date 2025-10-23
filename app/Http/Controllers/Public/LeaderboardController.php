@@ -16,14 +16,14 @@ class LeaderboardController extends Controller
     {
         // Stats
         $stats = [
-            'total_active_members' => User::where('role', 'member')
+            'total_active_members' => User::whereIn('role', ['member', 'head'])
                 ->where('total_points', '>', 0)
                 ->count(),
             'total_departments' => Department::count(),
             'total_badges_awarded' => User::withCount('badges')
                 ->get()
                 ->sum('badges_count'),
-            'highest_score' => User::where('role', 'member')->max('total_points') ?? 0,
+            'highest_score' => User::whereIn('role', ['member', 'head'])->max('total_points') ?? 0,
         ];
 
         return view('public.home', compact('stats'));
@@ -35,9 +35,9 @@ class LeaderboardController extends Controller
      */
     public function leaderboard()
     {
-        // Get top performers (only members with positive points)
+        // Get top performers (members and heads with positive points)
         $topPerformers = User::with(['department', 'badges'])
-            ->where('role', 'member')
+            ->whereIn('role', ['member', 'head'])
             ->where('total_points', '>', 0)
             ->orderBy('total_points', 'desc')
             ->limit(20)
@@ -69,14 +69,14 @@ class LeaderboardController extends Controller
 
         // Stats
         $stats = [
-            'total_active_members' => User::where('role', 'member')
+            'total_active_members' => User::whereIn('role', ['member', 'head'])
                 ->where('total_points', '>', 0)
                 ->count(),
             'total_departments' => Department::count(),
             'total_badges_awarded' => User::withCount('badges')
                 ->get()
                 ->sum('badges_count'),
-            'highest_score' => User::where('role', 'member')->max('total_points') ?? 0,
+            'highest_score' => User::whereIn('role', ['member', 'head'])->max('total_points') ?? 0,
         ];
 
         return view('public.leaderboard', compact(

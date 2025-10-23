@@ -475,25 +475,25 @@
 <div class="stats-grid-head">
     <div class="stat-card-head">
         <div class="stat-icon blue">👥</div>
-        <div class="stat-value">{{ $stats['total_anggota'] ?? 0 }}</div>
+        <div class="stat-value">{{ $stats['total_members'] ?? 0 }}</div>
         <div class="stat-label">Team Members</div>
     </div>
 
     <div class="stat-card-head">
         <div class="stat-icon green">⭐</div>
-        <div class="stat-value">{{ $stats['total_poin'] ?? 0 }}</div>
+        <div class="stat-value">{{ $stats['total_points'] ?? 0 }}</div>
         <div class="stat-label">Total Poin</div>
     </div>
 
     <div class="stat-card-head">
         <div class="stat-icon yellow">📊</div>
-        <div class="stat-value">{{ round($stats['average_poin'] ?? 0, 1) }}</div>
+        <div class="stat-value">{{ round($stats['average_points'] ?? 0, 1) }}</div>
         <div class="stat-label">Rata-rata Poin</div>
     </div>
 
     <div class="stat-card-head">
         <div class="stat-icon red">🏆</div>
-        <div class="stat-value">{{ $stats['top_performer']->name ?? '-' }}</div>
+        <div class="stat-value">{{ $stats['top_member']->name ?? '-' }}</div>
         <div class="stat-label">Top Performer</div>
     </div>
 </div>
@@ -516,7 +516,7 @@
                     <div class="member-email">{{ $member->email }}</div>
                 </div>
                 <div class="member-poin">
-                    <div class="member-poin-value">{{ $member->total_poin }}</div>
+                    <div class="member-poin-value">{{ $member->total_points }}</div>
                     <div class="member-poin-label">poin</div>
                 </div>
             </div>
@@ -608,7 +608,7 @@
                             </button>
                         @endif
                         @if($task->status === 'in_progress')
-                            <button class="btn btn-sm btn-success" onclick="updateTaskStatus({{ $task->id }}, 'selesai')">
+                            <button class="btn btn-sm btn-success" onclick="updateTaskStatus({{ $task->id }}, 'completed')">
                                 <i data-lucide="check" style="width: 16px; height: 16px;"></i>
                                 Mark as Completed
                             </button>

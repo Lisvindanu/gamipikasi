@@ -5,6 +5,7 @@ use App\Http\Controllers\Dashboard\HRController;
 use App\Http\Controllers\Dashboard\HeadController;
 use App\Http\Controllers\Dashboard\LeadController;
 use App\Http\Controllers\Dashboard\MemberController;
+use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\Public\LeaderboardController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
@@ -16,6 +17,7 @@ Route::get('/leaderboard', [LeaderboardController::class, 'leaderboard'])->name(
 Route::get('/rules', [LeaderboardController::class, 'rules'])->name('public.rules');
 Route::get('/badges', [LeaderboardController::class, 'badges'])->name('public.badges');
 Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
+Route::get('/organization', [OrganizationController::class, 'index'])->name('public.organization');
 
 // Profile Edit (Auth Required)
 Route::middleware('auth')->group(function () {
@@ -88,8 +90,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/tasks/{task}/comments', [HeadController::class, 'addTaskComment'])->name('tasks.comments.add');
     });
 
-    // Leadership Dashboard (for Lead, Co-Lead)
-    Route::prefix('lead')->name('lead.')->middleware('role:lead,co-lead')->group(function () {
+    // Leadership Dashboard (for Lead, Co-Lead, and HR Head)
+    Route::prefix('lead')->name('lead.')->middleware('role:lead,co-lead,hr')->group(function () {
         Route::get('/dashboard', [LeadController::class, 'index'])->name('dashboard');
         Route::get('/activity-log', [LeadController::class, 'activityLog'])->name('activity-log');
         Route::post('/export/points', [LeadController::class, 'exportPoints'])->name('export.points');
@@ -108,6 +110,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/settings/users', [LeadController::class, 'manageUsers'])->name('lead.users.index');
         Route::patch('/settings/users/{user}/role', [LeadController::class, 'updateUserRole'])->name('lead.users.update-role');
         Route::patch('/settings/users/{user}/department', [LeadController::class, 'updateUserDepartment'])->name('lead.users.update-department');
+    });
+
+    // Organization Management (for Lead, Co-Lead, and HR Head only)
+    Route::middleware('role:lead,co-lead,hr')->group(function () {
+        Route::get('/organization/manage', [OrganizationController::class, 'manage'])->name('organization.manage');
+        Route::post('/organization', [OrganizationController::class, 'store'])->name('organization.store');
+        Route::put('/organization/{user}', [OrganizationController::class, 'update'])->name('organization.update');
+        Route::delete('/organization/{user}', [OrganizationController::class, 'destroy'])->name('organization.destroy');
     });
 
     // Member Dashboard (for all members)

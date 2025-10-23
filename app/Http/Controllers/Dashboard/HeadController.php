@@ -13,9 +13,11 @@ use App\Models\User;
 use App\Models\Task;
 use App\Models\TaskAttachment;
 use App\Models\TaskComment;
+use App\Mail\TaskAssigned;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 
 class HeadController extends Controller
 {
@@ -109,10 +111,9 @@ class HeadController extends Controller
     {
         $user = Auth::user();
 
-        // Get tasks assigned to this head (from Lead)
+        // Get tasks assigned to this head (from Lead) - include all statuses
         $myTasks = Task::with(['assignedBy', 'assignedTo', 'attachments', 'comments.user'])
             ->where('assigned_to', $user->id)
-            ->whereIn('status', ['pending', 'in_progress'])
             ->orderBy('deadline')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -196,6 +197,9 @@ class HeadController extends Controller
                 $task->title,
                 $user->name
             );
+
+            // Send email notification
+            Mail::to($assignedUser->email)->send(new TaskAssigned($task, $assignedUser, $user));
 
             // Log activity
             $this->activityLogService->logTaskCreated($user->id, $task);

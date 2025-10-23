@@ -650,8 +650,10 @@
                 <div class="leaderboard-rank {{ $rankClass }}">
                     #{{ $index + 1 }}
                 </div>
-                <div class="leaderboard-avatar">
-                    {{ strtoupper(substr($member->name, 0, 1)) }}
+                <div class="leaderboard-avatar" style="@if($member->avatar_path) background-image: url('{{ asset('storage/' . $member->avatar_path) }}'); background-size: cover; background-position: center; @endif">
+                    @if(!$member->avatar_path)
+                        {{ strtoupper(substr($member->name, 0, 1)) }}
+                    @endif
                 </div>
                 <div class="leaderboard-info">
                     <div class="leaderboard-name">{{ $member->name }}</div>

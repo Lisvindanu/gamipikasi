@@ -25,6 +25,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'organization_position',
+        'organization_order',
         'department_id',
         'total_points',
         'avatar_path',
@@ -82,5 +84,53 @@ class User extends Authenticatable
     public function createdTasks(): HasMany
     {
         return $this->hasMany(Task::class, 'assigned_by');
+    }
+
+    public function organizationPosition(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(OrganizationPosition::class);
+    }
+
+    public function getOrganizationDisplayNameAttribute(): string
+    {
+        if (!$this->organization_position) {
+            return '';
+        }
+
+        return match($this->organization_position) {
+            'lead' => 'Lead',
+            'co_lead' => 'Co-Lead',
+            'bendahara' => 'Bendahara',
+            'secretary' => 'Secretary',
+            'head_of_event' => 'Head of Event',
+            'head_of_public_relation' => 'Head of Public Relation',
+            'head_of_media_creative' => 'Head of Media Creative',
+            'head_of_human_resource' => 'Head of Human Resource',
+            'head_of_machine_learning' => 'Head of Machine Learning',
+            'head_of_game_development' => 'Head of Game Development',
+            'head_of_iot_development' => 'Head of IoT Development',
+            'head_of_web_developer' => 'Head of Web Developer',
+            'head_of_curriculum_developer' => 'Head of Curriculum Developer',
+            'staff_event' => 'Staff Event',
+            default => $this->organization_position,
+        };
+    }
+
+    // Auto-sync to organization_positions table when organization_position changes
+    protected static function booted()
+    {
+        static::saved(function ($user) {
+            if ($user->organization_position) {
+                // Update or create in organization_positions table
+                OrganizationPosition::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'position_type' => 'core',
+                        'position_name' => $user->organization_position,
+                        'order' => $user->organization_order ?? 999,
+                    ]
+                );
+            }
+        });
     }
 }

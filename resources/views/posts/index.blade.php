@@ -84,11 +84,19 @@
 
                         <!-- Post Header -->
                         <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                            <div class="navbar-avatar" style="width: 48px; height: 48px; font-size: 1.25rem;">
-                                {{ strtoupper(substr($post->author->name, 0, 1)) }}
-                            </div>
+                            <a href="{{ route('profile.show', $post->author) }}" style="text-decoration: none;">
+                                <div class="navbar-avatar" style="width: 48px; height: 48px; font-size: 1.25rem; overflow: hidden;">
+                                    @if($post->author->avatar_path)
+                                        <img src="{{ asset('storage/' . $post->author->avatar_path) }}" alt="{{ $post->author->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                    @else
+                                        {{ strtoupper(substr($post->author->name, 0, 1)) }}
+                                    @endif
+                                </div>
+                            </a>
                             <div style="flex: 1;">
-                                <div style="font-weight: 600; color: var(--text-primary);">{{ $post->author->name }}</div>
+                                <a href="{{ route('profile.show', $post->author) }}" style="text-decoration: none;">
+                                    <div style="font-weight: 600; color: var(--text-primary); transition: color 0.3s;" onmouseover="this.style.color='var(--google-blue)'" onmouseout="this.style.color='var(--text-primary)'">{{ $post->author->name }}</div>
+                                </a>
                                 <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">
                                     <span>{{ $post->created_at->diffForHumans() }}</span>
                                     @if($post->department)

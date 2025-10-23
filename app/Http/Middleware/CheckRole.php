@@ -17,8 +17,15 @@ class CheckRole
             return redirect()->route('login');
         }
 
-        $userRole = auth()->user()->role;
+        $user = auth()->user();
+        $userRole = $user->role;
 
+        // Check if 'hr' is in roles and user is Head of HR department (department_id = 1)
+        if (in_array('hr', $roles) && $user->role === 'head' && $user->department_id == 1) {
+            return $next($request);
+        }
+
+        // Normal role check
         if (!in_array($userRole, $roles)) {
             abort(403, 'Unauthorized access');
         }

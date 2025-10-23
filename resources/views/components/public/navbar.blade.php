@@ -235,6 +235,7 @@
             <a href="{{ route('public.leaderboard') }}" class="navbar-link">Papan Peringkat</a>
             <a href="{{ route('posts.index') }}" class="navbar-link">Postingan</a>
             <a href="{{ route('public.badges') }}" class="navbar-link">Lencana</a>
+            <a href="{{ route('public.organization') }}" class="navbar-link">Tim Kami</a>
         </div>
     </div>
 
@@ -387,6 +388,10 @@
             <a href="{{ route('public.badges') }}" class="mobile-menu-link">
                 <i data-lucide="award" style="width: 20px; height: 20px;"></i>
                 <span>Lencana</span>
+            </a>
+            <a href="{{ route('public.organization') }}" class="mobile-menu-link">
+                <i data-lucide="users-2" style="width: 20px; height: 20px;"></i>
+                <span>Tim Kami</span>
             </a>
         </div>
     </div>

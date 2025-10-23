@@ -78,6 +78,10 @@
         border-left-color: var(--google-green);
     }
 
+    .trello-card.opacity-75 {
+        opacity: 0.75;
+    }
+
     .card-title {
         font-weight: 600;
         font-size: 0.9375rem;
@@ -325,8 +329,13 @@
     </h2>
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
         @foreach($myTasks as $task)
-            <div class="trello-card priority-{{ $task->priority }}" onclick="viewTask({{ $task->id }})">
-                <div class="card-title">{{ $task->title }}</div>
+            <div class="trello-card priority-{{ $task->priority }} {{ $task->status === 'completed' ? 'opacity-75' : '' }}" onclick="viewTask({{ $task->id }})">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                    <div class="card-title" style="flex: 1; margin-bottom: 0;">{{ $task->title }}</div>
+                    <span style="display: inline-block; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.625rem; font-weight: 600; text-transform: uppercase; margin-left: 0.5rem; {{ $task->status === 'completed' ? 'background: rgba(52, 168, 83, 0.1); color: var(--google-green);' : ($task->status === 'in_progress' ? 'background: rgba(251, 188, 4, 0.1); color: #f57c00;' : 'background: rgba(66, 133, 244, 0.1); color: var(--google-blue);') }}">
+                        {{ $task->status === 'in_progress' ? 'In Progress' : ucfirst($task->status) }}
+                    </span>
+                </div>
                 <div class="card-assignee">
                     <i data-lucide="user" style="width: 14px; height: 14px;"></i>
                     <span>From: {{ $task->assignedBy->name }}</span>
@@ -342,7 +351,7 @@
                         <span style="text-transform: capitalize;">{{ $task->priority }}</span>
                     </div>
                     @if($task->deadline)
-                        <div class="card-meta-item {{ $task->isOverdue() ? 'overdue-indicator' : '' }}">
+                        <div class="card-meta-item {{ $task->isOverdue() && $task->status !== 'completed' ? 'overdue-indicator' : '' }}">
                             <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
                             <span>{{ $task->deadline->format('M d') }}</span>
                         </div>
@@ -514,10 +523,12 @@
                     </div>
                 @endif
                 <div class="card-meta">
-                    <div class="card-meta-item" style="color: var(--google-green);">
-                        <i data-lucide="check-circle" style="width: 12px; height: 12px;"></i>
-                        <span>{{ $task->selesai_at->format('M d') }}</span>
-                    </div>
+                    @if($task->completed_at)
+                        <div class="card-meta-item" style="color: var(--google-green);">
+                            <i data-lucide="check-circle" style="width: 12px; height: 12px;"></i>
+                            <span>{{ $task->completed_at->format('M d') }}</span>
+                        </div>
+                    @endif
                     @if($task->attachments->count() > 0)
                         <div class="card-meta-item">
                             <i data-lucide="paperclip" style="width: 12px; height: 12px;"></i>
@@ -708,7 +719,7 @@
                             <span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; ${task.priority === 'high' ? 'background: rgba(234, 67, 53, 0.1); color: var(--google-red);' : (task.priority === 'medium' ? 'background: rgba(251, 188, 4, 0.1); color: #f57c00;' : 'background: rgba(52, 168, 83, 0.1); color: var(--google-green);')}">
                                 ${task.priority}
                             </span>
-                            <span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; ${task.status === 'selesai' ? 'background: rgba(52, 168, 83, 0.1); color: var(--google-green);' : (task.status === 'in_progress' ? 'background: rgba(251, 188, 4, 0.1); color: #f57c00;' : 'background: rgba(66, 133, 244, 0.1); color: var(--google-blue);')}">
+                            <span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; ${task.status === 'completed' ? 'background: rgba(52, 168, 83, 0.1); color: var(--google-green);' : (task.status === 'in_progress' ? 'background: rgba(251, 188, 4, 0.1); color: #f57c00;' : 'background: rgba(66, 133, 244, 0.1); color: var(--google-blue);')}">
                                 ${task.status.replace('_', ' ')}
                             </span>
                         </div>
@@ -784,7 +795,7 @@
                 </div>` : ''}
 
                 <!-- Upload & Comment Forms (for tasks assigned to head) -->
-                ${task.assigned_to.id == {{ auth()->id() }} && task.status !== 'selesai' ? `
+                ${task.assigned_to.id == {{ auth()->id() }} && task.status !== 'completed' ? `
                 <div style="margin-bottom: 1.5rem; padding: 1.5rem; background: var(--bg-light); border-radius: 12px;">
                     <h4 style="font-weight: 600; margin-bottom: 1rem;">📎 Upload Evidence</h4>
                     <form id="upload-form-${task.id}" onsubmit="uploadEvidence(event, ${task.id})" style="margin-bottom: 1.5rem;">
@@ -813,8 +824,8 @@
 
                 <!-- Actions -->
                 <div style="display: flex; gap: 1rem; padding-top: 1.5rem; border-top: 2px solid var(--bg-light);">
-                    ${task.status !== 'selesai' ? `
-                        <button class="btn btn-success" onclick="updateTaskStatus(${task.id}, 'selesai')">
+                    ${task.status !== 'completed' ? `
+                        <button class="btn btn-success" onclick="updateTaskStatus(${task.id}, 'completed')">
                             <i data-lucide="check" style="width: 16px; height: 16px;"></i>
                             Mark as Completed
                         </button>

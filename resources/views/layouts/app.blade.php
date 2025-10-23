@@ -201,10 +201,6 @@
                             <i data-lucide="kanban-square" style="width: 16px; height: 16px;"></i>
                             <span>Papan Tugas</span>
                         </a>
-                        <a href="{{ route('lead.activity-log') }}" class="btn {{ Request::routeIs('lead.activity-log') ? 'btn-primary' : 'btn-secondary' }}" style="padding: 0.5rem 1rem;">
-                            <i data-lucide="activity" style="width: 16px; height: 16px;"></i>
-                            <span>Log Aktivitas</span>
-                        </a>
                         <a href="{{ route('lead.settings') }}" class="btn {{ Request::routeIs('lead.settings') ? 'btn-primary' : 'btn-secondary' }}" style="padding: 0.5rem 1rem;">
                             <i data-lucide="settings" style="width: 16px; height: 16px;"></i>
                             <span>Pengaturan</span>
@@ -216,6 +212,22 @@
                         <a href="{{ route('lead.users.index') }}" class="btn {{ Request::routeIs('lead.users.index') ? 'btn-primary' : 'btn-secondary' }}" style="padding: 0.5rem 1rem;">
                             <i data-lucide="users-cog" style="width: 16px; height: 16px;"></i>
                             <span>Kelola Pengguna</span>
+                        </a>
+                    @endif
+
+                    {{-- Organization Management & Activity Log (for Lead, Co-Lead, and HR Head) --}}
+                    @if(in_array(auth()->user()->role, ['lead', 'co-lead']) || (auth()->user()->role === 'head' && auth()->user()->department_id == 1))
+                        <a href="{{ route('organization.manage') }}" class="btn {{ Request::routeIs('organization.manage') ? 'btn-primary' : 'btn-secondary' }}" style="padding: 0.5rem 1rem;">
+                            <i data-lucide="users-2" style="width: 16px; height: 16px;"></i>
+                            <span>Struktur Organisasi</span>
+                        </a>
+                    @endif
+
+                    {{-- Activity Log (for Lead, Co-Lead, and HR Head) --}}
+                    @if(in_array(auth()->user()->role, ['lead', 'co-lead']) || (auth()->user()->role === 'head' && auth()->user()->department_id == 1))
+                        <a href="{{ route('lead.activity-log') }}" class="btn {{ Request::routeIs('lead.activity-log') ? 'btn-primary' : 'btn-secondary' }}" style="padding: 0.5rem 1rem;">
+                            <i data-lucide="activity" style="width: 16px; height: 16px;"></i>
+                            <span>Log Aktivitas</span>
                         </a>
                     @endif
 
@@ -349,10 +361,6 @@
                         <i data-lucide="kanban-square" style="width: 20px; height: 20px;"></i>
                         <span>Papan Tugas</span>
                     </a>
-                    <a href="{{ route('lead.activity-log') }}" class="mobile-menu-link">
-                        <i data-lucide="activity" style="width: 20px; height: 20px;"></i>
-                        <span>Log Aktivitas</span>
-                    </a>
                     <a href="{{ route('lead.settings') }}" class="mobile-menu-link">
                         <i data-lucide="settings" style="width: 20px; height: 20px;"></i>
                         <span>Pengaturan</span>
@@ -363,6 +371,17 @@
                     <a href="{{ route('lead.users.index') }}" class="mobile-menu-link">
                         <i data-lucide="users-cog" style="width: 20px; height: 20px;"></i>
                         <span>Kelola Pengguna</span>
+                    </a>
+                @endif
+
+                @if(in_array(auth()->user()->role, ['lead', 'co-lead']) || (auth()->user()->role === 'head' && auth()->user()->department_id == 1))
+                    <a href="{{ route('organization.manage') }}" class="mobile-menu-link">
+                        <i data-lucide="users-2" style="width: 20px; height: 20px;"></i>
+                        <span>Struktur Organisasi</span>
+                    </a>
+                    <a href="{{ route('lead.activity-log') }}" class="mobile-menu-link">
+                        <i data-lucide="activity" style="width: 20px; height: 20px;"></i>
+                        <span>Log Aktivitas</span>
                     </a>
                 @endif
 

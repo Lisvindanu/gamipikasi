@@ -15,9 +15,11 @@ use App\Models\Post;
 use App\Models\Department;
 use App\Models\UserBadge;
 use App\Models\Task;
+use App\Mail\TaskAssigned;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Mail;
 
 class LeadController extends Controller
 {
@@ -240,6 +242,9 @@ class LeadController extends Controller
                 $task->title,
                 $user->name
             );
+
+            // Send email notification
+            Mail::to($assignedUser->email)->send(new TaskAssigned($task, $assignedUser, $user));
 
             // Log activity
             $this->activityLogService->logTaskCreated($user->id, $task);

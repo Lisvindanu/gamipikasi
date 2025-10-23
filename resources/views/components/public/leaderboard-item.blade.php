@@ -146,11 +146,18 @@
             @endif
         </div>
         <div class="member-info">
-            <div class="member-avatar">
-                {{ strtoupper(substr($member->name, 0, 1)) }}
+            <div class="member-avatar" style="@if($member->avatar_path) background-image: url('{{ asset('storage/' . $member->avatar_path) }}'); background-size: cover; background-position: center; @endif">
+                @if(!$member->avatar_path)
+                    {{ strtoupper(substr($member->name, 0, 1)) }}
+                @endif
             </div>
             <div class="member-details">
-                <div class="member-name">{{ $member->name }}</div>
+                <div class="member-name">
+                    {{ $member->name }}
+                    @if($member->role === 'head')
+                        <span style="display: inline-block; padding: 0.125rem 0.5rem; background: linear-gradient(135deg, #4285f4, #34a853); color: white; font-size: 0.625rem; font-weight: 600; border-radius: 12px; text-transform: uppercase; margin-left: 0.5rem; vertical-align: middle;">HEAD</span>
+                    @endif
+                </div>
                 <div class="member-dept">{{ $member->department?->name ?? 'No Department' }}</div>
                 @if($member->badges->count() > 0)
                     <div class="member-badges">

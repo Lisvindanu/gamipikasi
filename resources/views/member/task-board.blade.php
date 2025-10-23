@@ -408,10 +408,12 @@
                     </div>
                 @endif
                 <div class="card-meta">
-                    <div class="card-meta-item" style="color: var(--google-green);">
-                        <i data-lucide="check-circle" style="width: 12px; height: 12px;"></i>
-                        <span>{{ $task->selesai_at->format('M d') }}</span>
-                    </div>
+                    @if($task->completed_at)
+                        <div class="card-meta-item" style="color: var(--google-green);">
+                            <i data-lucide="check-circle" style="width: 12px; height: 12px;"></i>
+                            <span>{{ $task->completed_at->format('M d') }}</span>
+                        </div>
+                    @endif
                     @if($task->attachments->count() > 0)
                         <div class="card-meta-item">
                             <i data-lucide="paperclip" style="width: 12px; height: 12px;"></i>
@@ -534,7 +536,7 @@
                             <span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; ${task.priority === 'high' ? 'background: rgba(234, 67, 53, 0.1); color: var(--google-red);' : (task.priority === 'medium' ? 'background: rgba(251, 188, 4, 0.1); color: #f57c00;' : 'background: rgba(52, 168, 83, 0.1); color: var(--google-green);')}">
                                 ${task.priority}
                             </span>
-                            <span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; ${task.status === 'selesai' ? 'background: rgba(52, 168, 83, 0.1); color: var(--google-green);' : (task.status === 'in_progress' ? 'background: rgba(251, 188, 4, 0.1); color: #f57c00;' : 'background: rgba(66, 133, 244, 0.1); color: var(--google-blue);')}">
+                            <span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; ${task.status === 'completed' ? 'background: rgba(52, 168, 83, 0.1); color: var(--google-green);' : (task.status === 'in_progress' ? 'background: rgba(251, 188, 4, 0.1); color: #f57c00;' : 'background: rgba(66, 133, 244, 0.1); color: var(--google-blue);')}">
                                 ${task.status.replace('_', ' ')}
                             </span>
                         </div>
@@ -609,8 +611,8 @@
                     `).join('')}
                 </div>` : ''}
 
-                <!-- Upload & Comment Forms (for tasks not selesai) -->
-                ${task.status !== 'selesai' ? `
+                <!-- Upload & Comment Forms (for tasks not completed) -->
+                ${task.status !== 'completed' ? `
                 <div style="margin-bottom: 1.5rem; padding: 1.5rem; background: var(--bg-light); border-radius: 12px;">
                     <h4 style="font-weight: 600; margin-bottom: 1rem;">📎 Upload Evidence</h4>
                     <form id="upload-form-${task.id}" onsubmit="uploadEvidence(event, ${task.id})" style="margin-bottom: 1.5rem;">
@@ -639,19 +641,19 @@
 
                 <!-- Actions -->
                 <div style="display: flex; gap: 1rem; padding-top: 1.5rem; border-top: 2px solid var(--bg-light);">
-                    ${task.status === 'tertunda' ? `
+                    ${task.status === 'pending' ? `
                         <button class="btn btn-primary" onclick="updateTaskStatus(${task.id}, 'in_progress')">
                             <i data-lucide="play" style="width: 16px; height: 16px;"></i>
                             Start Working
                         </button>
                     ` : ''}
                     ${task.status === 'in_progress' ? `
-                        <button class="btn btn-success" onclick="updateTaskStatus(${task.id}, 'selesai')">
+                        <button class="btn btn-success" onclick="updateTaskStatus(${task.id}, 'completed')">
                             <i data-lucide="check" style="width: 16px; height: 16px;"></i>
                             Mark as Completed
                         </button>
                     ` : ''}
-                    ${task.status === 'selesai' ? `
+                    ${task.status === 'completed' ? `
                         <div style="color: var(--google-green); display: flex; align-items: center; gap: 0.5rem; font-weight: 600;">
                             <i data-lucide="check-circle" style="width: 20px; height: 20px;"></i>
                             <span>Task Completed</span>

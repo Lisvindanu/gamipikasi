@@ -299,7 +299,11 @@
 <!-- Profile Header -->
 <div class="profile-header">
     <div class="profile-avatar">
-        {{ strtoupper(substr($user->name ?? 'U', 0, 1)) }}
+        @if($user->avatar_path)
+            <img src="{{ asset('storage/' . $user->avatar_path) }}" alt="{{ $user->name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+        @else
+            {{ strtoupper(substr($user->name ?? 'U', 0, 1)) }}
+        @endif
     </div>
     <h1 class="profile-name">{{ $user->name ?? 'Member' }}</h1>
     <p class="profile-role">{{ str_replace('-', ' ', $user->role ?? 'member') }} - {{ $user->department->name ?? 'Tanpa Departemen' }}</p>

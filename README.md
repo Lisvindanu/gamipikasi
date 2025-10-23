@@ -1,61 +1,376 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎯 GDGoC Gamification System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> Sistem gamifikasi untuk Google Developer Groups on Campus - Universitas Pasundan
 
-## About Laravel
+[![Laravel](https://img.shields.io/badge/Laravel-11.x-red.svg)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📖 About
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+GDGoC Gamification adalah sistem manajemen poin dan lencana untuk meningkatkan engagement anggota Google Developer Groups on Campus. Sistem ini memungkinkan:
 
-## Learning Laravel
+- ✅ Manajemen tugas dengan sistem reward point
+- 🏆 Leaderboard kompetitif
+- 🎖️ Sistem lencana (badges) otomatis
+- 📧 Email notification untuk task assignment
+- 📊 Dashboard analytics untuk tracking performa
+- 👥 Role-based access (Lead, Co-Lead, Head, Member)
+- 📱 Responsive design untuk mobile & desktop
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🚀 Quick Start
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Prerequisites
+- PHP 8.2+
+- MySQL 8.0+
+- Composer
+- Node.js 18+
+- NPM
 
-## Laravel Sponsors
+### Installation
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. **Clone repository**
+```bash
+git clone <repository-url>
+cd gamipikasi
+```
 
-### Premium Partners
+2. **Install dependencies**
+```bash
+composer install
+npm install
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+3. **Setup environment**
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## Contributing
+4. **Configure database** (edit `.env`)
+```env
+DB_DATABASE=gamifikasi_gdgoc
+DB_USERNAME=root
+DB_PASSWORD=your_password
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+5. **Run migrations & seeders**
+```bash
+php artisan migrate --seed
+```
 
-## Code of Conduct
+6. **Build assets**
+```bash
+npm run build
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+7. **Start development server**
+```bash
+php artisan serve
+```
 
-## Security Vulnerabilities
+8. **Start queue worker** (in another terminal)
+```bash
+php artisan queue:work
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Visit: `http://localhost:8000`
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 📁 Project Structure
+
+```
+gamipikasi/
+├── app/
+│   ├── Http/Controllers/     # Controllers
+│   ├── Models/                # Eloquent models
+│   ├── Services/              # Business logic
+│   └── Mail/                  # Email templates
+├── database/
+│   ├── migrations/            # Database migrations
+│   └── seeders/               # Database seeders
+├── resources/
+│   ├── views/                 # Blade templates
+│   └── css/                   # Stylesheets
+├── routes/
+│   └── web.php                # Web routes
+└── public/                    # Public assets
+```
+
+---
+
+## 👥 User Roles
+
+### 1. **Lead / Co-Lead**
+- Full access ke semua fitur
+- Buat dan assign task ke Heads
+- Manage points dan badges
+- View all analytics
+- Manage users
+
+### 2. **Head of Department**
+- Dashboard departemen
+- Buat task untuk members di departemennya
+- Monitor team performance
+- Complete task dari Lead
+
+### 3. **Member**
+- View dan complete tasks
+- Earn points dan badges
+- View leaderboard
+- Upload evidence
+
+### 4. **Secretary / Bendahara**
+- Similar dengan Member
+- Additional access sesuai kebutuhan
+
+---
+
+## 🎮 Features
+
+### Task Management
+- **Trello-style board** dengan drag & drop
+- **Priority levels**: Low, Medium, High
+- **Status tracking**: Pending, In Progress, Completed
+- **Point rewards**: 0-50 points per task
+- **Deadline reminders**
+- **File attachments**
+- **Comments & collaboration**
+
+### Point System
+- **5 Categories**:
+  - 🤝 Commitment
+  - 👥 Collaboration
+  - 💡 Initiative
+  - ✅ Responsibility
+  - ⚠️ Violation (negative points)
+
+- **Point Range**: -20 to +50 per assessment
+- **Automatic calculation**
+- **Point history tracking**
+
+### Badge System
+- **Auto-award** based on achievements
+- **8 Badge tiers**:
+  - 🌟 Newcomer (0 points)
+  - ⭐ Rising Star (50 points)
+  - 🔥 Contributor (150 points)
+  - 💎 Active Member (300 points)
+  - 🏅 Top Contributor (500 points)
+  - 👑 Champion (750 points)
+  - 🚀 Legend (1000 points)
+  - 🌟 Master (1500 points)
+
+### Leaderboard
+- **Real-time ranking**
+- **Department comparison**
+- **Filter by department**
+- **Public facing page**
+
+### Notifications
+- **In-app notifications**
+- **Email notifications** untuk task assignment
+- **Deadline reminders**
+
+---
+
+## 🔧 Configuration
+
+### Email Setup (Gmail SMTP)
+
+Edit `.env`:
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-app-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=your-email@gmail.com
+MAIL_FROM_NAME="GDGoC Gamification"
+```
+
+**Note:** Gunakan App Password untuk Gmail, bukan password biasa.
+
+### Queue Configuration
+
+Untuk production, gunakan systemd service atau supervisor untuk queue worker. Lihat [DEPLOYMENT.md](DEPLOYMENT.md) untuk details.
+
+---
+
+## 📊 Database Schema
+
+### Main Tables
+- `users` - User accounts & roles
+- `departments` - Organization departments
+- `tasks` - Task management
+- `points` - Point history
+- `badges` - Badge definitions
+- `user_badges` - Earned badges
+- `notifications` - User notifications
+- `activity_logs` - Activity tracking
+
+---
+
+## 🎨 Tech Stack
+
+### Backend
+- **Framework**: Laravel 11.x
+- **Database**: MySQL 8.0
+- **Queue**: Database driver
+- **Cache**: Database/Redis
+
+### Frontend
+- **Template Engine**: Blade
+- **CSS Framework**: Custom CSS (Google Material Design inspired)
+- **Icons**: Lucide Icons
+- **JavaScript**: Vanilla JS + Alpine.js (minimal)
+
+### Email
+- **SMTP**: Gmail
+- **Queue**: Async email sending
+
+---
+
+## 🛠️ Development
+
+### Run tests
+```bash
+php artisan test
+```
+
+### Code style
+```bash
+composer format
+```
+
+### Clear cache
+```bash
+php artisan optimize:clear
+```
+
+### Database refresh
+```bash
+php artisan migrate:fresh --seed
+```
+
+---
+
+## 🚢 Deployment
+
+Untuk deployment ke production server, ikuti panduan lengkap di [DEPLOYMENT.md](DEPLOYMENT.md).
+
+### Quick Deploy Checklist
+- [ ] Server requirements met
+- [ ] Dependencies installed
+- [ ] Environment configured
+- [ ] Database migrated
+- [ ] Queue worker running
+- [ ] SSL configured
+- [ ] Backups scheduled
+
+---
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Queue not processing emails?**
+```bash
+# Make sure queue worker is running
+php artisan queue:work
+
+# Or restart the service
+sudo systemctl restart gdgoc-queue.service
+```
+
+**Permission denied errors?**
+```bash
+sudo chown -R www-data:www-data storage bootstrap/cache
+sudo chmod -R 775 storage bootstrap/cache
+```
+
+**Database connection failed?**
+```bash
+# Test connection
+php artisan tinker
+>>> DB::connection()->getPdo();
+```
+
+More troubleshooting: [DEPLOYMENT.md#troubleshooting](DEPLOYMENT.md#troubleshooting)
+
+---
+
+## 📝 Default Credentials
+
+**After seeding, use these credentials:**
+
+**Lead:**
+- Email: `narapatikeysa00@gmail.com`
+- Password: `gdgoc2024`
+
+**Co-Lead:**
+- Email: `nadziffa123@gmail.com`
+- Password: `gdgoc2024`
+
+⚠️ **IMPORTANT:** Change passwords immediately in production!
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 👨‍💻 Team
+
+**Developer:**
+- Muhammad Sufi Nadziffa Ridwan (Co-Lead)
+
+**Organization:**
+- Google Developer Groups on Campus
+- Universitas Pasundan
+
+---
+
+## 📞 Support
+
+- **Email**: gdsc@unpas.ac.id
+- **Website**: [gdgoc.vinmedia.my.id](https://gdgoc.vinmedia.my.id)
+
+---
+
+## 🎯 Roadmap
+
+- [x] Task management system
+- [x] Point & badge system
+- [x] Email notifications
+- [x] Leaderboard
+- [ ] Mobile app (React Native)
+- [ ] Real-time notifications (Pusher)
+- [ ] Advanced analytics
+- [ ] Export reports (PDF/Excel)
+- [ ] API documentation (Swagger)
+- [ ] Automated testing coverage
+
+---
+
+**Made with ❤️ by GDGoC Universitas Pasundan**
+
+*Last updated: 2025-10-23*

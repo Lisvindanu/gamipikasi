@@ -287,7 +287,9 @@
                 </h3>
                 @foreach($post->attachments as $attachment)
                     @php
-                        $isImage = in_array(strtolower(pathinfo($attachment->file_name, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']);
+                        $extension = strtolower(pathinfo($attachment->file_name, PATHINFO_EXTENSION));
+                        $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']);
+                        $isPdf = $extension === 'pdf';
                     @endphp
 
                     @if($isImage)
@@ -306,6 +308,35 @@
                                     <i data-lucide="download" style="width: 16px; height: 16px;"></i>
                                     Unduh
                                 </a>
+                            </div>
+                        </div>
+                    @elseif($isPdf)
+                        {{-- PDF Preview --}}
+                        <div class="attachment-item" style="display: block; padding: 0; overflow: hidden; margin-bottom: 1.5rem;">
+                            <div style="padding: 0.75rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-light); border-bottom: 2px solid var(--border-color);">
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <i data-lucide="file-text" style="width: 24px; height: 24px; color: var(--google-red);"></i>
+                                    <div>
+                                        <div style="font-weight: 600; font-size: 0.875rem;">{{ $attachment->file_name }}</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-secondary);">{{ number_format($attachment->file_size / 1024, 2) }} KB</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank" class="btn btn-sm btn-secondary" style="padding: 0.5rem 0.75rem;">
+                                        <i data-lucide="external-link" style="width: 16px; height: 16px;"></i>
+                                        Buka
+                                    </a>
+                                    <a href="{{ route('posts.attachments.download', $attachment) }}" class="btn btn-sm btn-secondary" style="padding: 0.5rem 0.75rem;">
+                                        <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+                                        Unduh
+                                    </a>
+                                </div>
+                            </div>
+                            <div style="position: relative; width: 100%; height: 600px; background: #525659;">
+                                <iframe src="{{ asset('storage/' . $attachment->file_path) }}"
+                                        style="width: 100%; height: 100%; border: none; border-radius: 0 0 8px 8px;"
+                                        title="{{ $attachment->file_name }}">
+                                </iframe>
                             </div>
                         </div>
                     @else

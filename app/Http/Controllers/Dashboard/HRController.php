@@ -10,6 +10,7 @@ use App\Services\PointService;
 use App\Services\BadgeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class HRController extends Controller
 {
@@ -169,6 +170,68 @@ class HRController extends Controller
                 'success' => false,
                 'message' => $e->getMessage(),
             ], 400);
+        }
+    }
+
+    /**
+     * Show create staff form
+     */
+    public function showCreateStaff()
+    {
+        $user = Auth::user();
+
+        // Check if user is from HR department (department_id = 1)
+        if ($user->department_id != 1) {
+            abort(403, 'Only HR team members can create staff accounts');
+        }
+
+        $departments = Department::all();
+
+        return view('hr.create-staff', compact('departments'));
+    }
+
+    /**
+     * Store new staff member
+     */
+    public function storeStaff(Request $request)
+    {
+        $user = Auth::user();
+
+        // Check if user is from HR department (department_id = 1)
+        if ($user->department_id != 1) {
+            abort(403, 'Only HR team members can create staff accounts');
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+            'department_id' => 'required|exists:departments,id',
+            'add_to_organization' => 'nullable|boolean',
+            'organization_position' => 'required_if:add_to_organization,1|nullable|string',
+            'organization_order' => 'required_if:add_to_organization,1|nullable|integer',
+        ]);
+
+        try {
+            // Create user
+            $newUser = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'role' => 'member',
+                'department_id' => $validated['department_id'],
+                'total_points' => 0,
+                'organization_position' => $validated['add_to_organization'] ? $validated['organization_position'] : null,
+                'organization_order' => $validated['add_to_organization'] ? $validated['organization_order'] : 999,
+            ]);
+
+            return redirect()->route('hr.dashboard')
+                ->with('success', "Staff {$newUser->name} berhasil ditambahkan!");
+
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->withErrors(['error' => 'Gagal menambahkan staff: ' . $e->getMessage()]);
         }
     }
 }

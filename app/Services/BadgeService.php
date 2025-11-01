@@ -26,11 +26,13 @@ class BadgeService
 
     /**
      * Check and auto-award badges based on user's achievements
+     *
+     * @return int Number of badges awarded
      */
-    public function checkAndAwardBadges(int $userId): array
+    public function checkAndAwardBadges(int $userId): int
     {
         $user = User::findOrFail($userId);
-        $awardedBadges = [];
+        $awardedCount = 0;
 
         // Get user's current badges
         $currentBadgeIds = $user->badges()->pluck('badges.id')->toArray();
@@ -83,11 +85,11 @@ class BadgeService
             // Award badge if criteria met
             if ($shouldAward) {
                 $this->awardBadge($userId, $badge->id);
-                $awardedBadges[] = $badge;
+                $awardedCount++;
             }
         }
 
-        return $awardedBadges;
+        return $awardedCount;
     }
 
     /**
@@ -125,5 +127,48 @@ class BadgeService
                 'users_count' => $badge->users_count,
             ];
         })->toArray();
+    }
+
+    /**
+     * Get badges that user is eligible for (without awarding them)
+     * Used for dry-run checks
+     */
+    public function getEligibleBadges(User $user)
+    {
+        $userId = $user->id;
+
+        // Get point breakdown by category
+        $pointBreakdown = Point::where('user_id', $userId)
+            ->select('category', DB::raw('SUM(value) as total'))
+            ->groupBy('category')
+            ->pluck('total', 'category')
+            ->toArray();
+
+        // Get total assessments count
+        $totalAssessments = Point::where('user_id', $userId)->count();
+        $totalPoints = $user->total_points;
+
+        // Get all auto-award badges
+        $badges = Badge::where('auto_award', true)->get();
+
+        return $badges->filter(function ($badge) use ($totalPoints, $totalAssessments, $pointBreakdown) {
+            switch ($badge->criteria_type) {
+                case 'points':
+                    return $totalPoints >= $badge->criteria_value;
+
+                case 'assessments':
+                    return $totalAssessments >= $badge->criteria_value;
+
+                case 'commitment':
+                case 'collaboration':
+                case 'initiative':
+                case 'responsibility':
+                    $categoryPoints = $pointBreakdown[$badge->criteria_type] ?? 0;
+                    return $categoryPoints >= $badge->criteria_value;
+
+                default:
+                    return false;
+            }
+        });
     }
 }

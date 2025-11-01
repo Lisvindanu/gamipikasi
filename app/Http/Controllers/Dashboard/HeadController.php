@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\Task;
 use App\Models\TaskAttachment;
 use App\Models\TaskComment;
+use App\Models\Department;
 use App\Mail\TaskAssigned;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -51,6 +52,11 @@ class HeadController extends Controller
     {
         $user = Auth::user();
         $departmentId = $user->department_id;
+
+        // Special case: Head of Curriculum Developer (manages all curriculum departments)
+        if (!$departmentId) {
+            return $this->curriculumDeveloperDashboard();
+        }
 
         // Get department info
         $department = $this->departmentService->getDepartmentById($departmentId);
@@ -135,11 +141,28 @@ class HeadController extends Controller
             'completed' => $departmentTasks->where('status', 'completed'),
         ];
 
-        // Get assignable users (members in same department)
-        $assignableUsers = User::where('department_id', $user->department_id)
-            ->where('role', 'member')
-            ->orderBy('name')
-            ->get();
+        // Get assignable users
+        // Special case for Head of Curriculum Developer (manages all curriculum departments)
+        if (!$user->department_id) {
+            $curriculumDeptIds = Department::whereIn('name', [
+                'Curriculum Web',
+                'Curriculum ML',
+                'Curriculum IoT',
+                'Curriculum Game'
+            ])->pluck('id');
+
+            $assignableUsers = User::whereIn('department_id', $curriculumDeptIds)
+                ->whereIn('role', ['member', 'head'])
+                ->orderBy('department_id')
+                ->orderBy('name')
+                ->get();
+        } else {
+            // Get assignable users (members in same department)
+            $assignableUsers = User::where('department_id', $user->department_id)
+                ->where('role', 'member')
+                ->orderBy('name')
+                ->get();
+        }
 
         return view('head.task-board', compact('tasksByStatus', 'assignableUsers', 'tasks', 'myTasks'));
     }
@@ -168,25 +191,55 @@ class HeadController extends Controller
             'point_reward' => 'nullable|integer|min:0|max:50',
         ]);
 
-        // Verify assigned user is in same department
+        // Verify assigned user
         $assignedUser = User::findOrFail($validated['assigned_to']);
-        if ($assignedUser->department_id !== $user->department_id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You can only assign tasks to members of your department',
-            ], 403);
+
+        // Special case: Head of Curriculum Developer can assign to any curriculum department
+        if ($user->department_id) {
+            // Normal head: can only assign to same department
+            if ($assignedUser->department_id !== $user->department_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You can only assign tasks to members of your department',
+                ], 403);
+            }
+        } else {
+            // Head of Curriculum Developer: can assign to any curriculum department
+            $curriculumDeptIds = Department::whereIn('name', [
+                'Curriculum Web',
+                'Curriculum ML',
+                'Curriculum IoT',
+                'Curriculum Game'
+            ])->pluck('id');
+
+            if (!in_array($assignedUser->department_id, $curriculumDeptIds->toArray())) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You can only assign tasks to curriculum department members',
+                ], 403);
+            }
+        }
+
+        // Auto-assign point reward based on priority if not set
+        if (!isset($validated['point_reward']) || $validated['point_reward'] === null) {
+            $pointRewardMap = [
+                'low' => 10,
+                'medium' => 25,
+                'high' => 40,
+            ];
+            $validated['point_reward'] = $pointRewardMap[$validated['priority']];
         }
 
         try {
             $task = Task::create([
                 'title' => $validated['title'],
                 'description' => $validated['description'] ?? null,
-                'department_id' => $user->department_id,
+                'department_id' => $assignedUser->department_id, // Use assigned user's department
                 'assigned_by' => $user->id,
                 'assigned_to' => $validated['assigned_to'],
                 'priority' => $validated['priority'],
                 'deadline' => $validated['deadline'] ?? null,
-                'point_reward' => $validated['point_reward'] ?? null,
+                'point_reward' => $validated['point_reward'],
                 'status' => 'pending',
             ]);
 
@@ -484,5 +537,75 @@ class HeadController extends Controller
                 'message' => $e->getMessage(),
             ], 400);
         }
+    }
+
+    /**
+     * Dashboard for Head of Curriculum Developer (manages all curriculum departments)
+     */
+    private function curriculumDeveloperDashboard()
+    {
+        $user = Auth::user();
+
+        // Get all curriculum departments (Web, ML, IoT, Game)
+        $curriculumDepartments = Department::whereIn('name', [
+            'Curriculum Web',
+            'Curriculum ML',
+            'Curriculum IoT',
+            'Curriculum Game'
+        ])->get();
+
+        $curriculumDeptIds = $curriculumDepartments->pluck('id')->toArray();
+
+        // Get all members from curriculum departments
+        $members = User::whereIn('department_id', $curriculumDeptIds)
+            ->with('department')
+            ->orderBy('department_id')
+            ->orderBy('name')
+            ->get();
+
+        // Get overall stats for all curriculum departments
+        $totalMembers = $members->count();
+        $avgPoints = round($members->avg('total_points'), 1);
+        $totalPoints = $members->sum('total_points');
+
+        // Get tasks for all curriculum departments
+        $tasks = Task::with(['assignedTo', 'assignedBy', 'department'])
+            ->whereIn('department_id', $curriculumDeptIds)
+            ->orderBy('deadline')
+            ->orderBy('created_at', 'desc')
+            ->limit(20)
+            ->get();
+
+        // Group members by department for display
+        $membersByDept = $members->groupBy('department.name');
+
+        $stats = [
+            'total_members' => $totalMembers,
+            'avg_points' => $avgPoints,
+            'total_points' => $totalPoints,
+            'total_tasks' => $tasks->count(),
+        ];
+
+        // Get deadline data
+        $upcomingDeadlines = $this->deadlineService->getUpcomingDeadlines(null, 7)
+            ->filter(function($task) use ($curriculumDeptIds) {
+                return in_array($task->department_id, $curriculumDeptIds);
+            });
+
+        $overdueTasks = $this->deadlineService->getOverdueTasks()
+            ->filter(function($task) use ($curriculumDeptIds) {
+                return in_array($task->department_id, $curriculumDeptIds);
+            });
+
+        return view('head.curriculum-dashboard', compact(
+            'user',
+            'curriculumDepartments',
+            'members',
+            'membersByDept',
+            'stats',
+            'tasks',
+            'upcomingDeadlines',
+            'overdueTasks'
+        ));
     }
 }

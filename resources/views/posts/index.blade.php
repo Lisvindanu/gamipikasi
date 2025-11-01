@@ -204,6 +204,6 @@
     </style>
 
     <script>
-        lucide.createIcons();
+        if (typeof window.initLucideIcons === 'function') { window.initLucideIcons(); } else if (typeof lucide !== 'undefined') { lucide.createIcons(); }
     </script>
 @endsection

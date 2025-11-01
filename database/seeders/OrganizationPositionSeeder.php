@@ -30,14 +30,15 @@ class OrganizationPositionSeeder extends Seeder
             ['email' => 'desihafitaashri.dha@gmail.com', 'position_type' => 'core', 'position_name' => 'head_of_event', 'order' => 6],
             ['email' => 'rayhanalfarezki@gmail.com', 'position_type' => 'core', 'position_name' => 'head_of_public_relation', 'order' => 7],
             ['email' => 'valdricapd@gmail.com', 'position_type' => 'core', 'position_name' => 'head_of_media_creative', 'order' => 8],
-            ['email' => 'mmarsa2435@gmail.com', 'position_type' => 'core', 'position_name' => 'staff_event', 'order' => 9],
 
             // Tech Team
-            ['email' => 'mfauzandwiputera10@gmail.com', 'position_type' => 'core', 'position_name' => 'head_of_machine_learning', 'order' => 10],
-            ['email' => 'rafli@kodingin.id', 'position_type' => 'core', 'position_name' => 'head_of_web_developer', 'order' => 11],
-            ['email' => 'dhika@kodingin.id', 'position_type' => 'core', 'position_name' => 'head_of_curriculum_developer', 'order' => 12],
-            ['email' => 'raden.233040043@mail.unpas.ac.id', 'position_type' => 'core', 'position_name' => 'head_of_game_development', 'order' => 13],
-            ['email' => 'naufalzul45@gmail.com', 'position_type' => 'core', 'position_name' => 'head_of_iot_development', 'order' => 14],
+            ['email' => 'mfauzandwiputera10@gmail.com', 'position_type' => 'core', 'position_name' => 'head_of_machine_learning', 'order' => 9],
+            ['email' => 'rafli@kodingin.id', 'position_type' => 'core', 'position_name' => 'head_of_web_developer', 'order' => 10],
+            ['email' => 'dhika@kodingin.id', 'position_type' => 'core', 'position_name' => 'head_of_curriculum_developer', 'order' => 11],
+            ['email' => 'raden.233040043@mail.unpas.ac.id', 'position_type' => 'core', 'position_name' => 'head_of_game_development', 'order' => 12],
+            ['email' => 'naufalzul45@gmail.com', 'position_type' => 'core', 'position_name' => 'head_of_iot_development', 'order' => 13],
+            ['email' => 'mmarsa2435@gmail.com', 'position_type' => 'core', 'position_name' => 'staff_web_developer', 'order' => 14],
+            ['email' => 'chalidarlh@gmail.com', 'position_type' => 'core', 'position_name' => 'staff_hr', 'order' => 15],
         ];
 
         foreach ($organizationData as $data) {

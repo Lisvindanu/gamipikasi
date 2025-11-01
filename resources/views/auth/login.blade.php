@@ -251,7 +251,7 @@
     </div>
 
     <script>
-        lucide.createIcons();
+        if (typeof window.initLucideIcons === 'function') { window.initLucideIcons(); } else if (typeof lucide !== 'undefined') { lucide.createIcons(); }
 
         // Show loading on form submit
         document.getElementById('login-form').addEventListener('submit', function() {

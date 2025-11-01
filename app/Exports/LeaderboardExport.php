@@ -15,17 +15,19 @@ class LeaderboardExport implements FromCollection, WithHeadings, WithMapping, Wi
 {
     protected $departmentId;
     protected $limit;
+    protected $role;
 
-    public function __construct($departmentId = null, $limit = 50)
+    public function __construct($departmentId = null, $limit = 50, $role = 'member')
     {
         $this->departmentId = $departmentId;
         $this->limit = $limit;
+        $this->role = $role; // 'member' or 'head'
     }
 
     public function collection()
     {
         $query = User::with(['department', 'badges'])
-            ->where('role', 'member')
+            ->where('role', $this->role)
             ->where('total_points', '>', 0);
 
         if ($this->departmentId) {
@@ -87,6 +89,6 @@ class LeaderboardExport implements FromCollection, WithHeadings, WithMapping, Wi
 
     public function title(): string
     {
-        return 'Leaderboard';
+        return $this->role === 'head' ? 'Leaderboard Head' : 'Leaderboard Staff & Member';
     }
 }

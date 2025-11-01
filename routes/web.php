@@ -58,6 +58,11 @@ Route::prefix('posts')->name('posts.')->group(function () {
 // Protected Routes
 Route::middleware('auth')->group(function () {
 
+    // General Rules Page (accessible by all authenticated users)
+    Route::get('/rules-internal', function () {
+        return view('rules.index');
+    })->name('rules.internal');
+
     // Notifications (accessible by all authenticated users)
     Route::get('/notifications', [MemberController::class, 'getNotifications'])->name('notifications.index');
     Route::post('/notifications/{notification}/read', [MemberController::class, 'markNotificationAsRead'])->name('notifications.read');
@@ -72,6 +77,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [HRController::class, 'index'])->name('dashboard');
         Route::post('/points', [HRController::class, 'addPoint'])->name('points.add');
         Route::post('/points/bulk', [HRController::class, 'bulkAddPoints'])->name('points.bulk');
+        Route::get('/staff/create', [HRController::class, 'showCreateStaff'])->name('staff.create');
+        Route::post('/staff', [HRController::class, 'storeStaff'])->name('staff.store');
     });
 
     // Head of Department Dashboard (for Head only)

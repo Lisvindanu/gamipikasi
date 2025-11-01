@@ -177,8 +177,17 @@
         padding: 2rem;
         max-width: 600px;
         width: 90%;
-        max-height: 90vh;
+        max-height: 85vh;
         overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    @media (max-width: 768px) {
+        .modal-content {
+            max-height: 90vh;
+            padding: 1.5rem;
+        }
     }
 
     .modal-header {
@@ -589,7 +598,7 @@
 
             <div class="form-group">
                 <label class="form-label">Prioritas *</label>
-                <select name="priority" class="form-select" required>
+                <select name="priority" id="taskPriority" class="form-select" required>
                     <option value="low">Low</option>
                     <option value="medium" selected>Medium</option>
                     <option value="high">High</option>
@@ -602,9 +611,11 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">Reward Poin (0-50)</label>
-                <input type="number" name="point_reward" class="form-input" min="0" max="50" placeholder="e.g., 10">
-                <small style="color: var(--text-secondary); font-size: 0.875rem;">Poin diberikan saat tugas selesai</small>
+                <label class="form-label">Reward Poin (Opsional)</label>
+                <input type="number" name="point_reward" id="taskPointReward" class="form-input" min="0" max="50" placeholder="Auto: 25 poin">
+                <small style="color: var(--text-secondary); font-size: 0.875rem;">
+                    <strong>Otomatis:</strong> Low = 10pt, Medium = 25pt, High = 40pt. Kosongkan untuk gunakan nilai otomatis.
+                </small>
             </div>
 
             <div style="display: flex; gap: 1rem; margin-top: 2rem;">
@@ -647,7 +658,7 @@
 
 @push('scripts')
 <script>
-    lucide.createIcons();
+    if (typeof window.initLucideIcons === 'function') { window.initLucideIcons(); } else if (typeof lucide !== 'undefined') { lucide.createIcons(); }
 
     // Check if we need to reopen a task modal after page reload
     document.addEventListener('DOMContentLoaded', function() {
@@ -665,7 +676,33 @@
     function closeTaskModal() {
         document.getElementById('taskModal').classList.remove('active');
         document.getElementById('taskForm').reset();
+        // Reset placeholder to medium
+        updatePointPlaceholder('medium');
     }
+
+    // Auto-update point reward placeholder based on priority
+    function updatePointPlaceholder(priority) {
+        const pointRewardInput = document.getElementById('taskPointReward');
+        const pointMap = {
+            'low': 10,
+            'medium': 25,
+            'high': 40
+        };
+
+        if (pointRewardInput) {
+            pointRewardInput.placeholder = `Auto: ${pointMap[priority]} poin`;
+        }
+    }
+
+    // Listen to priority changes
+    document.addEventListener('DOMContentLoaded', function() {
+        const prioritySelect = document.getElementById('taskPriority');
+        if (prioritySelect) {
+            prioritySelect.addEventListener('change', function() {
+                updatePointPlaceholder(this.value);
+            });
+        }
+    });
 
     async function createTask(event) {
         event.preventDefault();

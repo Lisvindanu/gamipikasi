@@ -303,9 +303,15 @@
 
     <!-- Member List -->
     <div class="card">
-        <div class="card-header">
-            <h2 class="card-title">Member Assessment</h2>
-            <p class="card-subtitle">Click on a member to add points</p>
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: start;">
+            <div>
+                <h2 class="card-title">Member Assessment</h2>
+                <p class="card-subtitle">Click on a member to add points</p>
+            </div>
+            <a href="{{ route('hr.staff.create') }}" class="btn btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
+                <i data-lucide="user-plus" style="width: 18px; height: 18px;"></i>
+                <span>Tambah Staff</span>
+            </a>
         </div>
 
         <!-- Filter -->
@@ -623,7 +629,7 @@
         document.querySelectorAll('.bulk-category').forEach(c => c.classList.remove('active'));
         document.getElementById('bulk-point-range-hint').textContent = 'Pilih kategori terlebih dahulu';
 
-        lucide.createIcons();
+        if (typeof window.initLucideIcons === 'function') { window.initLucideIcons(); } else if (typeof lucide !== 'undefined') { lucide.createIcons(); }
     }
 
     function closeBulkPointModal() {
@@ -647,7 +653,7 @@
 
             document.getElementById('bulk-point-range-hint').textContent = `Range: ${bulkMin} s/d ${bulkMax}`;
 
-            lucide.createIcons();
+            if (typeof window.initLucideIcons === 'function') { window.initLucideIcons(); } else if (typeof lucide !== 'undefined') { lucide.createIcons(); }
         });
     });
 
@@ -752,7 +758,7 @@
 
             document.getElementById('point-range-hint').textContent = `Range: ${currentMin} to ${currentMax}`;
 
-            lucide.createIcons();
+            if (typeof window.initLucideIcons === 'function') { window.initLucideIcons(); } else if (typeof lucide !== 'undefined') { lucide.createIcons(); }
         });
     });
 
@@ -783,7 +789,7 @@
         document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
         document.getElementById('point-range-hint').textContent = 'Select category first';
 
-        lucide.createIcons();
+        if (typeof window.initLucideIcons === 'function') { window.initLucideIcons(); } else if (typeof lucide !== 'undefined') { lucide.createIcons(); }
     }
 
     function closeAddPointModal() {
@@ -880,6 +886,6 @@
     searchInput.addEventListener('input', filterMembers);
 
     // Initialize icons
-    lucide.createIcons();
+    if (typeof window.initLucideIcons === 'function') { window.initLucideIcons(); } else if (typeof lucide !== 'undefined') { lucide.createIcons(); }
 </script>
 @endpush

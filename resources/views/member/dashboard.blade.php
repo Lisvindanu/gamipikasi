@@ -647,7 +647,7 @@
             }, 100);
         });
 
-        lucide.createIcons();
+        if (typeof window.initLucideIcons === 'function') { window.initLucideIcons(); } else if (typeof lucide !== 'undefined') { lucide.createIcons(); }
     });
 </script>
 @endpush

@@ -634,39 +634,86 @@
     </div>
 </div>
 
-<!-- Leaderboard -->
-<div class="leaderboard-section">
-    <div class="card-header">
-        <h2 class="card-title">🏆 Anggota Terbaik</h2>
-        <p class="card-subtitle">Peringkat keseluruhan</p>
-    </div>
+<!-- Leaderboards -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
+    <!-- Head Leaderboard -->
+    <div class="leaderboard-section">
+        <div class="card-header">
+            <h2 class="card-title">🏅 Peringkat Head</h2>
+            <p class="card-subtitle">Kepala departemen terbaik</p>
+        </div>
 
-    <div style="margin-top: 1.5rem;">
-        @foreach($leaderboard ?? [] as $index => $member)
-            @php
-                $rankClass = $index === 0 ? 'gold' : ($index === 1 ? 'silver' : ($index === 2 ? 'bronze' : 'regular'));
-            @endphp
-            <div class="leaderboard-item">
-                <div class="leaderboard-rank {{ $rankClass }}">
-                    #{{ $index + 1 }}
-                </div>
-                <div class="leaderboard-avatar" style="@if($member->avatar_path) background-image: url('{{ asset('storage/' . $member->avatar_path) }}'); background-size: cover; background-position: center; @endif">
-                    @if(!$member->avatar_path)
-                        {{ strtoupper(substr($member->name, 0, 1)) }}
-                    @endif
-                </div>
-                <div class="leaderboard-info">
-                    <div class="leaderboard-name">{{ $member->name }}</div>
-                    <div class="leaderboard-meta">
-                        {{ ucfirst(str_replace('-', ' ', $member->role)) }} • {{ $member->department->name ?? 'Tanpa Departemen' }}
+        <div style="margin-top: 1.5rem;">
+            @forelse($headLeaderboard ?? [] as $index => $member)
+                @php
+                    $rankClass = $index === 0 ? 'gold' : ($index === 1 ? 'silver' : ($index === 2 ? 'bronze' : 'regular'));
+                @endphp
+                <div class="leaderboard-item">
+                    <div class="leaderboard-rank {{ $rankClass }}">
+                        #{{ $index + 1 }}
+                    </div>
+                    <div class="leaderboard-avatar" style="@if($member->avatar_path) background-image: url('{{ asset('storage/' . $member->avatar_path) }}'); background-size: cover; background-position: center; @endif">
+                        @if(!$member->avatar_path)
+                            {{ strtoupper(substr($member->name, 0, 1)) }}
+                        @endif
+                    </div>
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-name">{{ $member->name }}</div>
+                        <div class="leaderboard-meta">
+                            {{ $member->department->name ?? 'Tanpa Departemen' }}
+                        </div>
+                    </div>
+                    <div class="leaderboard-points">
+                        <div class="leaderboard-points-value">{{ $member->total_points }}</div>
+                        <div class="leaderboard-points-label">poin</div>
                     </div>
                 </div>
-                <div class="leaderboard-points">
-                    <div class="leaderboard-points-value">{{ $member->total_points }}</div>
-                    <div class="leaderboard-points-label">poin</div>
+            @empty
+                <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                    Belum ada data head
                 </div>
-            </div>
-        @endforeach
+            @endforelse
+        </div>
+    </div>
+
+    <!-- Member Leaderboard -->
+    <div class="leaderboard-section">
+        <div class="card-header">
+            <h2 class="card-title">⭐ Peringkat Staff & Member</h2>
+            <p class="card-subtitle">Staff dan member terbaik</p>
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+            @forelse($memberLeaderboard ?? [] as $index => $member)
+                @php
+                    $rankClass = $index === 0 ? 'gold' : ($index === 1 ? 'silver' : ($index === 2 ? 'bronze' : 'regular'));
+                @endphp
+                <div class="leaderboard-item">
+                    <div class="leaderboard-rank {{ $rankClass }}">
+                        #{{ $index + 1 }}
+                    </div>
+                    <div class="leaderboard-avatar" style="@if($member->avatar_path) background-image: url('{{ asset('storage/' . $member->avatar_path) }}'); background-size: cover; background-position: center; @endif">
+                        @if(!$member->avatar_path)
+                            {{ strtoupper(substr($member->name, 0, 1)) }}
+                        @endif
+                    </div>
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-name">{{ $member->name }}</div>
+                        <div class="leaderboard-meta">
+                            {{ $member->department->name ?? 'Tanpa Departemen' }}
+                        </div>
+                    </div>
+                    <div class="leaderboard-points">
+                        <div class="leaderboard-points-value">{{ $member->total_points }}</div>
+                        <div class="leaderboard-points-label">poin</div>
+                    </div>
+                </div>
+            @empty
+                <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                    Belum ada data member
+                </div>
+            @endforelse
+        </div>
     </div>
 </div>
 @endsection
@@ -684,7 +731,7 @@
             }, 100);
         });
 
-        lucide.createIcons();
+        if (typeof window.initLucideIcons === 'function') { window.initLucideIcons(); } else if (typeof lucide !== 'undefined') { lucide.createIcons(); }
     });
 </script>
 @endpush

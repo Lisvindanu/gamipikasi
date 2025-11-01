@@ -231,8 +231,24 @@ class PostController extends Controller
         try {
             $this->postService->deleteAttachment($attachment, Auth::user());
 
+            // Return JSON for AJAX requests
+            if (request()->wantsJson() || request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Lampiran berhasil dihapus!'
+                ]);
+            }
+
             return back()->with('success', 'Lampiran berhasil dihapus!');
         } catch (\Exception $e) {
+            // Return JSON error for AJAX requests
+            if (request()->wantsJson() || request()->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ], 400);
+            }
+
             return back()->with('error', $e->getMessage());
         }
     }

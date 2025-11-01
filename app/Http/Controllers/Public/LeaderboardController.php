@@ -35,7 +35,23 @@ class LeaderboardController extends Controller
      */
     public function leaderboard()
     {
-        // Get top performers (members and heads with positive points)
+        // Get top performing HEADS with positive points
+        $topHeads = User::with(['department', 'badges'])
+            ->where('role', 'head')
+            ->where('total_points', '>', 0)
+            ->orderBy('total_points', 'desc')
+            ->limit(10)
+            ->get();
+
+        // Get top performing MEMBERS/STAFF with positive points
+        $topMembers = User::with(['department', 'badges'])
+            ->where('role', 'member')
+            ->where('total_points', '>', 0)
+            ->orderBy('total_points', 'desc')
+            ->limit(20)
+            ->get();
+
+        // Get top performers (members and heads with positive points) - for backward compatibility
         $topPerformers = User::with(['department', 'badges'])
             ->whereIn('role', ['member', 'head'])
             ->where('total_points', '>', 0)
@@ -81,6 +97,8 @@ class LeaderboardController extends Controller
 
         return view('public.leaderboard', compact(
             'topPerformers',
+            'topHeads',
+            'topMembers',
             'departmentRankings',
             'recentBadges',
             'badges',

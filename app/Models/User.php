@@ -112,6 +112,13 @@ class User extends Authenticatable
             'head_of_web_developer' => 'Head of Web Developer',
             'head_of_curriculum_developer' => 'Head of Curriculum Developer',
             'staff_event' => 'Staff Event',
+            'staff_web_developer' => 'Staff Web Developer',
+            'staff_hr' => 'Staff HR',
+            'staff_media' => 'Staff Media Creative',
+            'staff_pr' => 'Staff Public Relation',
+            'staff_ml' => 'Staff Machine Learning',
+            'staff_iot' => 'Staff IoT',
+            'staff_game' => 'Staff Game Development',
             default => $this->organization_position,
         };
     }

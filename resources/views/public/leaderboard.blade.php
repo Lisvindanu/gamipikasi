@@ -18,20 +18,39 @@
             ]
         ])
 
-        <!-- Papan Peringkat Section -->
-        <section id="leaderboard" class="section">
+        <!-- Papan Peringkat Head Section -->
+        <section id="leaderboard-heads" class="section">
             <div class="section-header">
-                <h2 class="section-title">Anggota Terbaik</h2>
-                <p class="section-subtitle">Anggota yang menonjol dan memimpin periode ini</p>
+                <h2 class="section-title">🏅 Peringkat Head Department</h2>
+                <p class="section-subtitle">Para kepala departemen dengan pencapaian terbaik</p>
             </div>
 
             <div class="leaderboard-grid">
-                @forelse($topPerformers as $index => $member)
+                @forelse($topHeads as $index => $member)
                     @include('components.public.leaderboard-item', ['member' => $member, 'index' => $index])
                 @empty
                     <div style="text-align: center; padding: 4rem; color: #5f6368;">
                         <div style="font-size: 4rem; margin-bottom: 1rem;">🏆</div>
-                        <div style="font-size: 1.125rem;">Belum ada anggota. Jadilah yang pertama meraih poin!</div>
+                        <div style="font-size: 1.125rem;">Belum ada head. Jadilah yang pertama meraih poin!</div>
+                    </div>
+                @endforelse
+            </div>
+        </section>
+
+        <!-- Papan Peringkat Member/Staff Section -->
+        <section id="leaderboard-members" class="section">
+            <div class="section-header">
+                <h2 class="section-title">⭐ Peringkat Staff & Member</h2>
+                <p class="section-subtitle">Staff dan member yang menonjol dan memimpin periode ini</p>
+            </div>
+
+            <div class="leaderboard-grid">
+                @forelse($topMembers as $index => $member)
+                    @include('components.public.leaderboard-item', ['member' => $member, 'index' => $index])
+                @empty
+                    <div style="text-align: center; padding: 4rem; color: #5f6368;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">🏆</div>
+                        <div style="font-size: 1.125rem;">Belum ada member. Jadilah yang pertama meraih poin!</div>
                     </div>
                 @endforelse
             </div>

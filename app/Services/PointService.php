@@ -86,7 +86,7 @@ class PointService
     /**
      * Get leaderboard
      */
-    public function getLeaderboard(?int $departmentId = null, int $limit = 10)
+    public function getLeaderboard(?int $departmentId = null, int $limit = 10, ?array $roles = null)
     {
         $query = User::with('department:id,name')
             ->select('id', 'name', 'email', 'role', 'department_id', 'total_points')
@@ -96,7 +96,27 @@ class PointService
             $query->where('department_id', $departmentId);
         }
 
+        if ($roles) {
+            $query->whereIn('role', $roles);
+        }
+
         return $query->limit($limit)->get();
+    }
+
+    /**
+     * Get leaderboard for heads only
+     */
+    public function getHeadLeaderboard(?int $departmentId = null, int $limit = 10)
+    {
+        return $this->getLeaderboard($departmentId, $limit, ['head']);
+    }
+
+    /**
+     * Get leaderboard for members/staff only
+     */
+    public function getMemberLeaderboard(?int $departmentId = null, int $limit = 10)
+    {
+        return $this->getLeaderboard($departmentId, $limit, ['member']);
     }
 
     /**

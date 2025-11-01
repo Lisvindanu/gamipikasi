@@ -24,7 +24,9 @@ class OrganizationController extends Controller
     {
         $user = auth()->user();
 
-        if (!in_array($user->role, ['lead', 'co-lead', 'hr'])) {
+        // Only Lead, Co-Lead, and Head HR can manage organization
+        if (!in_array($user->role, ['lead', 'co-lead']) &&
+            !($user->role === 'head' && $user->department_id == 1)) {
             abort(403, 'Unauthorized access');
         }
 

@@ -746,7 +746,7 @@
         // Modal functions
         function openEditModal() {
             document.getElementById('edit-modal').classList.add('active');
-            lucide.createIcons();
+            if (typeof window.initLucideIcons === 'function') { window.initLucideIcons(); } else if (typeof lucide !== 'undefined') { lucide.createIcons(); }
         }
 
         function closeEditModal() {
@@ -755,7 +755,7 @@
 
         function openPasswordModal() {
             document.getElementById('password-modal').classList.add('active');
-            lucide.createIcons();
+            if (typeof window.initLucideIcons === 'function') { window.initLucideIcons(); } else if (typeof lucide !== 'undefined') { lucide.createIcons(); }
         }
 
         function closePasswordModal() {
@@ -764,7 +764,7 @@
 
         function openAvatarModal() {
             document.getElementById('avatar-modal').classList.add('active');
-            lucide.createIcons();
+            if (typeof window.initLucideIcons === 'function') { window.initLucideIcons(); } else if (typeof lucide !== 'undefined') { lucide.createIcons(); }
         }
 
         function closeAvatarModal() {
@@ -803,6 +803,6 @@
             }
         }
 
-        lucide.createIcons();
+        if (typeof window.initLucideIcons === 'function') { window.initLucideIcons(); } else if (typeof lucide !== 'undefined') { lucide.createIcons(); }
     </script>
 @endsection

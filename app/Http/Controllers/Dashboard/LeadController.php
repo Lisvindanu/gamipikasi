@@ -62,7 +62,11 @@ class LeadController extends Controller
         // Get department performance
         $departmentPerformance = $this->departmentService->getAllDepartmentsPerformance();
 
-        // Get leaderboard
+        // Get leaderboards (separated by role)
+        $headLeaderboard = $this->pointService->getHeadLeaderboard(null, 10);
+        $memberLeaderboard = $this->pointService->getMemberLeaderboard(null, 10);
+
+        // Get combined leaderboard for backward compatibility
         $leaderboard = $this->pointService->getLeaderboard(null, 10);
 
         // Get upcoming deadlines
@@ -70,7 +74,7 @@ class LeadController extends Controller
         $overdueTasks = $this->deadlineService->getOverdueTasks();
         $deadlineStats = $this->deadlineService->getDeadlineStats();
 
-        return view('lead.dashboard', compact('stats', 'departmentPerformance', 'leaderboard', 'upcomingDeadlines', 'overdueTasks', 'deadlineStats'));
+        return view('lead.dashboard', compact('stats', 'departmentPerformance', 'leaderboard', 'headLeaderboard', 'memberLeaderboard', 'upcomingDeadlines', 'overdueTasks', 'deadlineStats'));
     }
 
     /**
@@ -222,6 +226,16 @@ class LeadController extends Controller
             ], 403);
         }
 
+        // Auto-assign point reward based on priority if not set
+        if (!isset($validated['point_reward']) || $validated['point_reward'] === null) {
+            $pointRewardMap = [
+                'low' => 10,
+                'medium' => 25,
+                'high' => 40,
+            ];
+            $validated['point_reward'] = $pointRewardMap[$validated['priority']];
+        }
+
         try {
             $task = Task::create([
                 'title' => $validated['title'],
@@ -231,7 +245,7 @@ class LeadController extends Controller
                 'assigned_to' => $validated['assigned_to'],
                 'priority' => $validated['priority'],
                 'deadline' => $validated['deadline'] ?? null,
-                'point_reward' => $validated['point_reward'] ?? null,
+                'point_reward' => $validated['point_reward'],
                 'status' => 'pending',
             ]);
 

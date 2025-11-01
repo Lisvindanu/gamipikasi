@@ -17,9 +17,9 @@ class CanManageUsers
     {
         $user = auth()->user();
 
-        // Allow Lead, Co-Lead, or HR Head (Lisvindanu)
+        // Allow Lead, Co-Lead, or Head of HR only
         if (in_array($user->role, ['lead', 'co-lead']) ||
-            ($user->role === 'head' && $user->email === 'Lisvindanu015@gmail.com')) {
+            ($user->role === 'head' && $user->department_id == 1)) { // Head HR only
             return $next($request);
         }
 

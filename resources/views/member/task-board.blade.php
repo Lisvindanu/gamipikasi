@@ -464,7 +464,7 @@
 
 @push('scripts')
 <script>
-    lucide.createIcons();
+    if (typeof window.initLucideIcons === 'function') { window.initLucideIcons(); } else if (typeof lucide !== 'undefined') { lucide.createIcons(); }
 
     // Check if we need to reopen a task modal after page reload
     document.addEventListener('DOMContentLoaded', function() {

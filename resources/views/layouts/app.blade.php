@@ -7,7 +7,7 @@
     <title>@yield('title', 'Dashboard') - GDGoC Gamification</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/favicon.ico') }}">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ asset('assets/css/base.css') }}">
@@ -149,8 +149,8 @@
     <nav class="navbar-auth">
         <!-- Left Side: Logo + Brand -->
         <div class="navbar-brand">
-            <div class="navbar-logo" style="background: linear-gradient(135deg, var(--google-blue), var(--google-green)); color: white; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem;">
-                🎯
+            <div class="navbar-logo" style="width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                <img src="{{ asset('favicon.png') }}" alt="GDGoC Logo" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
             <h1 class="navbar-title" style="font-size: 1.125rem; font-weight: 700; color: var(--text-primary); margin: 0;">GDGoC Gamification</h1>
         </div>
@@ -163,6 +163,9 @@
                 <a href="{{ route('public.leaderboard') }}" class="navbar-link">Papan Peringkat</a>
                 <a href="{{ route('posts.index') }}" class="navbar-link">Postingan</a>
                 <a href="{{ route('public.badges') }}" class="navbar-link">Lencana</a>
+                @auth
+                    <a href="{{ route('rules.internal') }}" class="navbar-link">Peraturan</a>
+                @endauth
             </div>
         </div>
 
@@ -207,15 +210,15 @@
                         </a>
                     @endif
 
-                    {{-- User Management (for Lead, Co-Lead, and HR Head Lisvindanu) --}}
-                    @if(in_array(auth()->user()->role, ['lead', 'co-lead']) || (auth()->user()->role === 'head' && auth()->user()->email === 'Lisvindanu015@gmail.com'))
+                    {{-- User Management (for Lead, Co-Lead, and Head HR only) --}}
+                    @if(in_array(auth()->user()->role, ['lead', 'co-lead']) || (auth()->user()->role === 'head' && auth()->user()->department_id == 1))
                         <a href="{{ route('lead.users.index') }}" class="btn {{ Request::routeIs('lead.users.index') ? 'btn-primary' : 'btn-secondary' }}" style="padding: 0.5rem 1rem;">
                             <i data-lucide="users-cog" style="width: 16px; height: 16px;"></i>
                             <span>Kelola Pengguna</span>
                         </a>
                     @endif
 
-                    {{-- Organization Management & Activity Log (for Lead, Co-Lead, and HR Head) --}}
+                    {{-- Organization Management (for Lead, Co-Lead, and Head HR only) --}}
                     @if(in_array(auth()->user()->role, ['lead', 'co-lead']) || (auth()->user()->role === 'head' && auth()->user()->department_id == 1))
                         <a href="{{ route('organization.manage') }}" class="btn {{ Request::routeIs('organization.manage') ? 'btn-primary' : 'btn-secondary' }}" style="padding: 0.5rem 1rem;">
                             <i data-lucide="users-2" style="width: 16px; height: 16px;"></i>
@@ -223,8 +226,8 @@
                         </a>
                     @endif
 
-                    {{-- Activity Log (for Lead, Co-Lead, and HR Head) --}}
-                    @if(in_array(auth()->user()->role, ['lead', 'co-lead']) || (auth()->user()->role === 'head' && auth()->user()->department_id == 1))
+                    {{-- Activity Log (for Lead, Co-Lead, and ALL HR Department members) --}}
+                    @if(in_array(auth()->user()->role, ['lead', 'co-lead']) || auth()->user()->department_id == 1)
                         <a href="{{ route('lead.activity-log') }}" class="btn {{ Request::routeIs('lead.activity-log') ? 'btn-primary' : 'btn-secondary' }}" style="padding: 0.5rem 1rem;">
                             <i data-lucide="activity" style="width: 16px; height: 16px;"></i>
                             <span>Log Aktivitas</span>
@@ -367,7 +370,7 @@
                     </a>
                 @endif
 
-                @if(in_array(auth()->user()->role, ['lead', 'co-lead']) || (auth()->user()->role === 'head' && auth()->user()->email === 'Lisvindanu015@gmail.com'))
+                @if(in_array(auth()->user()->role, ['lead', 'co-lead']) || (auth()->user()->role === 'head' && auth()->user()->department_id == 1))
                     <a href="{{ route('lead.users.index') }}" class="mobile-menu-link">
                         <i data-lucide="users-cog" style="width: 20px; height: 20px;"></i>
                         <span>Kelola Pengguna</span>
@@ -379,6 +382,9 @@
                         <i data-lucide="users-2" style="width: 20px; height: 20px;"></i>
                         <span>Struktur Organisasi</span>
                     </a>
+                @endif
+
+                @if(in_array(auth()->user()->role, ['lead', 'co-lead']) || auth()->user()->department_id == 1)
                     <a href="{{ route('lead.activity-log') }}" class="mobile-menu-link">
                         <i data-lucide="activity" style="width: 20px; height: 20px;"></i>
                         <span>Log Aktivitas</span>
@@ -423,6 +429,10 @@
                     <i data-lucide="award" style="width: 20px; height: 20px;"></i>
                     <span>Lencana</span>
                 </a>
+                <a href="{{ route('rules.internal') }}" class="mobile-menu-link">
+                    <i data-lucide="book-open" style="width: 20px; height: 20px;"></i>
+                    <span>Peraturan</span>
+                </a>
             </div>
         </div>
 
@@ -457,7 +467,23 @@
     </div>
 
     <script>
-        lucide.createIcons();
+        // Safe Lucide initialization
+        window.initLucideIcons = function() {
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                try {
+                    lucide.createIcons();
+                } catch (e) {
+                    console.warn('Lucide initialization error:', e);
+                }
+            }
+        };
+
+        // Initialize icons on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', window.initLucideIcons);
+        } else {
+            window.initLucideIcons();
+        }
 
         // Mobile Menu Toggle (same as public navbar)
         window.toggleMobileMenu = function() {
@@ -471,7 +497,7 @@
             } else {
                 toggle.setAttribute('data-lucide', 'menu');
             }
-            lucide.createIcons();
+            window.initLucideIcons();
         };
 
         // Close mobile menu when clicking a link
@@ -483,7 +509,7 @@
                     menu.classList.remove('active');
                     if (toggle) {
                         toggle.setAttribute('data-lucide', 'menu');
-                        lucide.createIcons();
+                        window.initLucideIcons();
                     }
                 }
             });
@@ -557,7 +583,7 @@
                         <p>Failed to load notifications</p>
                     </div>
                 `;
-                lucide.createIcons();
+                window.initLucideIcons();
             }
         }
 
@@ -583,7 +609,7 @@
                         <p>No notifications yet</p>
                     </div>
                 `;
-                lucide.createIcons();
+                window.initLucideIcons();
                 return;
             }
 
@@ -639,7 +665,7 @@
             }).join('');
 
             listContainer.innerHTML = notificationItems;
-            lucide.createIcons();
+            window.initLucideIcons();
         }
 
         // Handle notification click

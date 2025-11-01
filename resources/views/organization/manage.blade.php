@@ -409,20 +409,33 @@
                 <label class="form-label">Posisi</label>
                 <select name="position_name" required class="form-select">
                     <option value="">Pilih Posisi</option>
-                    <option value="lead">Lead</option>
-                    <option value="co_lead">Co-Lead</option>
-                    <option value="bendahara">Bendahara</option>
-                    <option value="secretary">Secretary</option>
-                    <option value="head_of_human_resource">Head of Human Resource</option>
-                    <option value="head_of_event">Head of Event</option>
-                    <option value="head_of_public_relation">Head of Public Relation</option>
-                    <option value="head_of_media_creative">Head of Media Creative</option>
-                    <option value="staff_event">Staff Event</option>
-                    <option value="head_of_machine_learning">Head of Machine Learning</option>
-                    <option value="head_of_web_developer">Head of Web Developer</option>
-                    <option value="head_of_curriculum_developer">Head of Curriculum Developer</option>
-                    <option value="head_of_game_development">Head of Game Development</option>
-                    <option value="head_of_iot_development">Head of IoT Development</option>
+                    <optgroup label="Core Leadership">
+                        <option value="lead">Lead</option>
+                        <option value="co_lead">Co-Lead</option>
+                        <option value="bendahara">Bendahara</option>
+                        <option value="secretary">Secretary</option>
+                    </optgroup>
+                    <optgroup label="Department Heads">
+                        <option value="head_of_human_resource">Head of Human Resource</option>
+                        <option value="head_of_event">Head of Event</option>
+                        <option value="head_of_public_relation">Head of Public Relation</option>
+                        <option value="head_of_media_creative">Head of Media Creative</option>
+                        <option value="head_of_machine_learning">Head of Machine Learning</option>
+                        <option value="head_of_web_developer">Head of Web Developer</option>
+                        <option value="head_of_curriculum_developer">Head of Curriculum Developer</option>
+                        <option value="head_of_game_development">Head of Game Development</option>
+                        <option value="head_of_iot_development">Head of IoT Development</option>
+                    </optgroup>
+                    <optgroup label="Department Staff">
+                        <option value="staff_hr">Staff HR</option>
+                        <option value="staff_event">Staff Event</option>
+                        <option value="staff_pr">Staff Public Relation</option>
+                        <option value="staff_media">Staff Media Creative</option>
+                        <option value="staff_web_developer">Staff Web Developer</option>
+                        <option value="staff_ml">Staff Machine Learning</option>
+                        <option value="staff_iot">Staff IoT</option>
+                        <option value="staff_game">Staff Game Development</option>
+                    </optgroup>
                 </select>
             </div>
 
@@ -455,20 +468,33 @@
             <div class="form-group">
                 <label class="form-label">Posisi</label>
                 <select name="position_name" id="edit_position_name" required class="form-select">
-                    <option value="lead">Lead</option>
-                    <option value="co_lead">Co-Lead</option>
-                    <option value="bendahara">Bendahara</option>
-                    <option value="secretary">Secretary</option>
-                    <option value="head_of_human_resource">Head of Human Resource</option>
-                    <option value="head_of_event">Head of Event</option>
-                    <option value="head_of_public_relation">Head of Public Relation</option>
-                    <option value="head_of_media_creative">Head of Media Creative</option>
-                    <option value="staff_event">Staff Event</option>
-                    <option value="head_of_machine_learning">Head of Machine Learning</option>
-                    <option value="head_of_web_developer">Head of Web Developer</option>
-                    <option value="head_of_curriculum_developer">Head of Curriculum Developer</option>
-                    <option value="head_of_game_development">Head of Game Development</option>
-                    <option value="head_of_iot_development">Head of IoT Development</option>
+                    <optgroup label="Core Leadership">
+                        <option value="lead">Lead</option>
+                        <option value="co_lead">Co-Lead</option>
+                        <option value="bendahara">Bendahara</option>
+                        <option value="secretary">Secretary</option>
+                    </optgroup>
+                    <optgroup label="Department Heads">
+                        <option value="head_of_human_resource">Head of Human Resource</option>
+                        <option value="head_of_event">Head of Event</option>
+                        <option value="head_of_public_relation">Head of Public Relation</option>
+                        <option value="head_of_media_creative">Head of Media Creative</option>
+                        <option value="head_of_machine_learning">Head of Machine Learning</option>
+                        <option value="head_of_web_developer">Head of Web Developer</option>
+                        <option value="head_of_curriculum_developer">Head of Curriculum Developer</option>
+                        <option value="head_of_game_development">Head of Game Development</option>
+                        <option value="head_of_iot_development">Head of IoT Development</option>
+                    </optgroup>
+                    <optgroup label="Department Staff">
+                        <option value="staff_hr">Staff HR</option>
+                        <option value="staff_event">Staff Event</option>
+                        <option value="staff_pr">Staff Public Relation</option>
+                        <option value="staff_media">Staff Media Creative</option>
+                        <option value="staff_web_developer">Staff Web Developer</option>
+                        <option value="staff_ml">Staff Machine Learning</option>
+                        <option value="staff_iot">Staff IoT</option>
+                        <option value="staff_game">Staff Game Development</option>
+                    </optgroup>
                 </select>
             </div>
 
@@ -523,7 +549,7 @@ document.getElementById('editModal').addEventListener('click', function(e) {
 
 // Initialize Lucide icons
 if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
+    if (typeof window.initLucideIcons === 'function') { window.initLucideIcons(); } else if (typeof lucide !== 'undefined') { lucide.createIcons(); }
 }
 </script>
 @endsection

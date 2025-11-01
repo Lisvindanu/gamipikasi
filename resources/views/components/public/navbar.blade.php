@@ -19,16 +19,19 @@
     }
 
     .navbar-logo {
-        background: linear-gradient(135deg, var(--google-blue), var(--google-green));
-        color: white;
         width: 40px;
         height: 40px;
         border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: 700;
-        font-size: 1.25rem;
+        overflow: hidden;
+    }
+
+    .navbar-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     .navbar-title {
@@ -224,7 +227,9 @@
 <nav class="navbar-public">
     <!-- Left Side: Logo + Brand -->
     <div class="navbar-brand">
-        <div class="navbar-logo">🎯</div>
+        <div class="navbar-logo">
+            <img src="{{ asset('favicon.png') }}" alt="GDGoC Logo">
+        </div>
         <h1 class="navbar-title">GDGoC Gamification</h1>
     </div>
 
@@ -236,6 +241,9 @@
             <a href="{{ route('posts.index') }}" class="navbar-link">Postingan</a>
             <a href="{{ route('public.badges') }}" class="navbar-link">Lencana</a>
             <a href="{{ route('public.organization') }}" class="navbar-link">Tim Kami</a>
+            @auth
+                <a href="{{ route('rules.internal') }}" class="navbar-link">Peraturan</a>
+            @endauth
         </div>
     </div>
 
@@ -393,6 +401,12 @@
                 <i data-lucide="users-2" style="width: 20px; height: 20px;"></i>
                 <span>Tim Kami</span>
             </a>
+            @auth
+                <a href="{{ route('rules.internal') }}" class="mobile-menu-link">
+                    <i data-lucide="book-open" style="width: 20px; height: 20px;"></i>
+                    <span>Peraturan</span>
+                </a>
+            @endauth
         </div>
     </div>
 
@@ -430,7 +444,9 @@
         } else {
             icon.setAttribute('data-lucide', 'menu');
         }
-        lucide.createIcons();
+        if (typeof window.initLucideIcons === 'function') {
+            window.initLucideIcons();
+        }
     }
 
     // Close mobile menu when clicking a link
@@ -440,12 +456,14 @@
             menu.classList.remove('active');
             const icon = document.querySelector('.navbar-toggle i');
             icon.setAttribute('data-lucide', 'menu');
-            lucide.createIcons();
+            if (typeof window.initLucideIcons === 'function') {
+                window.initLucideIcons();
+            }
         });
     });
 
-    // Initialize Lucide icons
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
+    // Initialize Lucide icons (uses global function from layout)
+    if (typeof window.initLucideIcons === 'function') {
+        window.initLucideIcons();
     }
 </script>

@@ -150,13 +150,13 @@ class RealUserSeeder extends Seeder
                 'total_points' => 0,
             ],
 
-            // 13. Event Staff
+            // 13. Web Dev Staff
             [
                 'name' => 'Muhamad Marsa Nur Jaman',
                 'email' => 'mmarsa2435@gmail.com',
                 'password' => $defaultPassword,
                 'role' => 'member',
-                'department_id' => $departments['event']->id ?? null,
+                'department_id' => $departments['web']->id ?? null,
                 'total_points' => 0,
             ],
 
@@ -167,6 +167,16 @@ class RealUserSeeder extends Seeder
                 'password' => $defaultPassword,
                 'role' => 'head',
                 'department_id' => null, // Manages all curriculum departments
+                'total_points' => 0,
+            ],
+
+            // 15. HR Staff
+            [
+                'name' => 'Chalida Rahma Listy Hidayat',
+                'email' => 'chalidarlh@gmail.com',
+                'password' => $defaultPassword,
+                'role' => 'member',
+                'department_id' => $departments['hr']->id ?? null,
                 'total_points' => 0,
             ],
         ];
@@ -181,12 +191,13 @@ class RealUserSeeder extends Seeder
             'desihafitaashri.dha@gmail.com' => ['head_of_event', 6],
             'rayhanalfarezki@gmail.com' => ['head_of_public_relation', 7],
             'valdricapd@gmail.com' => ['head_of_media_creative', 8],
-            'mmarsa2435@gmail.com' => ['staff_event', 9],
-            'mfauzandwiputera10@gmail.com' => ['head_of_machine_learning', 10],
-            'rafli@kodingin.id' => ['head_of_web_developer', 11],
-            'dhika@kodingin.id' => ['head_of_curriculum_developer', 12],
-            'raden.233040043@mail.unpas.ac.id' => ['head_of_game_development', 13],
-            'naufalzul45@gmail.com' => ['head_of_iot_development', 14],
+            'mfauzandwiputera10@gmail.com' => ['head_of_machine_learning', 9],
+            'rafli@kodingin.id' => ['head_of_web_developer', 10],
+            'dhika@kodingin.id' => ['head_of_curriculum_developer', 11],
+            'raden.233040043@mail.unpas.ac.id' => ['head_of_game_development', 12],
+            'naufalzul45@gmail.com' => ['head_of_iot_development', 13],
+            'mmarsa2435@gmail.com' => ['staff_web_developer', 14],
+            'chalidarlh@gmail.com' => ['staff_hr', 15],
         ];
 
         foreach ($users as $userData) {
